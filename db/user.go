@@ -17,3 +17,18 @@ func (d *MyBlogDB) AddUser(u *User) (bool, int64) {
 
 	return suc, id
 }
+
+// UpdateUser UpdateUser
+func (d *MyBlogDB) UpdateUser(u *User) bool {
+	var suc bool
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	if u != nil {
+		var a []any
+		a = append(a, u.Password, u.FirstName, u.LastName, u.Image, u.ID)
+		suc = d.DB.Update(updateUser, a...)
+		d.Log.Debug("suc in update user", suc)
+	}
+	return suc
+}
