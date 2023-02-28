@@ -1,0 +1,7 @@
+mode: set
+github.com/Ulbora/go-micro-blog/db/db.go:47.42,55.26 8 1
+github.com/Ulbora/go-micro-blog/db/db.go:55.26,60.17 3 1
+github.com/Ulbora/go-micro-blog/db/db.go:60.17,62.4 1 1
+github.com/Ulbora/go-micro-blog/db/db.go:63.3,63.20 1 1
+github.com/Ulbora/go-micro-blog/db/db.go:63.20,65.4 1 1
+github.com/Ulbora/go-micro-blog/db/db.go:67.2,67.12 1 1
