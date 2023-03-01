@@ -43,6 +43,7 @@ type Role struct {
 // Blog Blog
 type Blog struct {
 	ID      int64     `json:"id"`
+	Name    string    `json:"name"`
 	Content string    `json:"content"`
 	UserID  int64     `json:"userId"`
 	Active  bool      `json:"active"`

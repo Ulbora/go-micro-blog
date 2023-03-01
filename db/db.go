@@ -1,13 +1,5 @@
 package db
 
-import (
-	"fmt"
-	"strconv"
-
-	lg "github.com/GolangToolKits/go-level-logger"
-	gdb "github.com/GolangToolKits/go-mysql"
-)
-
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
  All rights reserved.
@@ -28,41 +20,33 @@ import (
 
 */
 
+const (
+	timeFormat     = "2006-01-02 15:04:05"
+	dateOnlyFormat = "2006-01-02"
+)
+
 // BlogDB BlogDB
 type BlogDB interface {
 	//users
 	AddUser(u *User) (bool, int64)
 	UpdateUser(u *User) bool
 	GetUser(email string) *User
+	GetUserList() *[]User
 	EnableUser(uid int64) bool
 	DisableUser(uid int64) bool
-}
 
-// MyBlogDB MyBlogDB
-type MyBlogDB struct {
-	DB  gdb.Database
-	Log lg.Log
-}
+	//Role
+	AddRole(name string) (bool, int64)
+	GetRole(name string) *Role
+	GetRoleList() *[]Role
+	DeleteRole(id int64) bool
 
-func (d *MyBlogDB) testConnection() bool {
-	d.Log.Debug("in testConnection")
-	var rtn = false
-	var a []any
-	d.Log.Debug("d.DB: ", fmt.Sprintln(d.DB))
-	rowPtr := d.DB.Test(blogTest, a...)
-	d.Log.Debug("rowPtr", *rowPtr)
-	d.Log.Debug("after testConnection test", *rowPtr)
-	if len(rowPtr.Row) != 0 {
-		foundRow := rowPtr.Row
-		int64Val, err := strconv.ParseInt(foundRow[0], 10, 0)
-		//log.Print("Records found during test ")
-		//log.Println("Records found during test :", int64Val)
-		if err != nil {
-			d.Log.Error(err)
-		}
-		if int64Val >= 0 {
-			rtn = true
-		}
-	}
-	return rtn
+	//Blog
+	AddBlog(b *Blog) (bool, int64)
+	UpdateBlog(u *Blog) bool
+	GetBlog(id int64) *Blog
+	GetBlogsByName(name string, start int64, end int64) *[]Blog
+	GetBlogList(start int64, end int64) *[]Blog
+	ActivateBlog(id int64) bool
+	DeactivateBlog(id int64) bool
 }
