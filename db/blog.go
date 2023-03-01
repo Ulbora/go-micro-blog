@@ -73,22 +73,66 @@ func (d *MyBlogDB) GetBlog(id int64) *Blog {
 
 // GetBlogsByName GetBlogsByName
 func (d *MyBlogDB) GetBlogsByName(name string, start int64, end int64) *[]Blog {
-	return nil
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []Blog{}
+	var a []any
+	a = append(a, "%"+name+"%", start, end)
+	rows := d.DB.GetList(selectBlogByName, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseBlogRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
 }
 
 // GetBlogList GetBlogList
 func (d *MyBlogDB) GetBlogList(start int64, end int64) *[]Blog {
-	return nil
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []Blog{}
+	var a []any
+	a = append(a, start, end)
+	rows := d.DB.GetList(selectBlogList, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseBlogRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
 }
 
 // ActivateBlog ActivateBlog
 func (d *MyBlogDB) ActivateBlog(id int64) bool {
-	return false
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, id)
+
+	rtn := d.DB.Update(activateBlog, a...)
+	return rtn
 }
 
 // DeactivateBlog DeactivateBlog
 func (d *MyBlogDB) DeactivateBlog(id int64) bool {
-	return false
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, id)
+
+	rtn := d.DB.Update(deactivateBlog, a...)
+	return rtn
 }
 
 func (d *MyBlogDB) parseBlogRow(foundRow *[]string) *Blog {

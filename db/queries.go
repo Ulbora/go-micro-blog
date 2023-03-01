@@ -45,4 +45,20 @@ const (
 	selectBlog = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
 		" where id = ? "
+
+	selectBlogByName = " SELECT id, name, content, user_id, active, entered, updated " +
+		" from  blog " +
+		" order by name " +
+		" where name like ? LIMIT ?, ?  "
+
+	selectBlogList = " SELECT id, name, content, user_id, active, entered, updated " +
+		" from  blog " +
+		" order by name " +
+		" LIMIT ?, ? "
+
+	activateBlog = "UPDATE blog SET active = true " +
+		"where id = ?"
+
+	deactivateBlog = "UPDATE blog SET active = false " +
+		"where id = ?"
 )
