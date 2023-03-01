@@ -49,4 +49,9 @@ type BlogDB interface {
 	GetBlogList(start int64, end int64) *[]Blog
 	ActivateBlog(id int64) bool
 	DeactivateBlog(id int64) bool
+
+	//likes
+	AddLike(l *Like) (bool, int64)
+	RemoveLike(uid, bid int64) bool
+	ViewLikes(bid int64) *[]Like
 }
