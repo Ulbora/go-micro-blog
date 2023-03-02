@@ -1,5 +1,7 @@
 package db
 
+import "strconv"
+
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
  All rights reserved.
@@ -21,7 +23,7 @@ package db
 */
 
 // AddLike AddLike
-func (d *MyBlogDB) AddLike(l *Like) (bool, int64) {
+func (d *MyBlogDB) AddLike(l *Like) bool {
 	var suc bool
 	var id int64
 	if !d.testConnection() {
@@ -34,16 +36,54 @@ func (d *MyBlogDB) AddLike(l *Like) (bool, int64) {
 		d.Log.Debug("suc in add like", suc)
 		d.Log.Debug("id in add like", id)
 	}
-
-	return suc, id
+	return suc
 }
 
 // RemoveLike RemoveLike
 func (d *MyBlogDB) RemoveLike(uid, bid int64) bool {
-	return false
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, uid, bid)
+
+	rtn := d.DB.Delete(deleteLike, a...)
+	return rtn
 }
 
 // ViewLikes ViewLikes
 func (d *MyBlogDB) ViewLikes(bid int64) *[]Like {
-	return nil
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []Like{}
+	var a []any
+	a = append(a, bid)
+	rows := d.DB.GetList(selectLikeList, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseLikeRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
+}
+
+func (d *MyBlogDB) parseLikeRow(foundRow *[]string) *Like {
+	var rtn Like
+	d.Log.Debug("foundRow in likes", *foundRow)
+	if len(*foundRow) > 0 {
+		uid, err := strconv.ParseInt((*foundRow)[0], 10, 64)
+		d.Log.Debug("id err in get likes", err)
+		if err == nil {
+			bid, err := strconv.ParseInt((*foundRow)[1], 10, 64)
+			if err == nil {
+				rtn.UserID = uid
+				rtn.BlogID = bid
+			}
+		}
+	}
+	return &rtn
 }

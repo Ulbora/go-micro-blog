@@ -33,8 +33,8 @@ func (d *MyBlogDB) AddRole(name string) (bool, int64) {
 		var a []any
 		a = append(a, name)
 		suc, id = d.DB.Insert(insertRole, a...)
-		d.Log.Debug("suc in add user", suc)
-		d.Log.Debug("id in add user", id)
+		d.Log.Debug("suc in add role", suc)
+		d.Log.Debug("id in add role", id)
 	}
 	return suc, id
 }

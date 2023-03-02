@@ -64,4 +64,27 @@ const (
 
 	insertLike = "insert into likes (user_id, blog_id) " +
 		" values (?, ?) "
+
+	selectLikeList = "SELECT user_id, blog_id " +
+		" from likes " +
+		" where blog_id = ? "
+
+	deleteLike = " DELETE from likes " +
+		" where user_id = ? and blog_id = ? "
+
+	insertComment = "insert into comment (text, user_id, blog_id, active) " +
+		" values (?, ?, ?, ?) "
+
+	updateComment = " UPDATE comment SET text = ? " +
+		" where id = ? "
+
+	selectCommentList = " SELECT id, text, user_id, blog_id, active " +
+		" from  comment " +
+		" where blog_id = ? LIMIT ?, ? "
+
+	activateComment = "UPDATE comment SET active = true " +
+		"where id = ?"
+
+	deactivateComment = "UPDATE comment SET active = false " +
+		"where id = ?"
 )

@@ -51,7 +51,14 @@ type BlogDB interface {
 	DeactivateBlog(id int64) bool
 
 	//likes
-	AddLike(l *Like) (bool, int64)
+	AddLike(l *Like) bool
 	RemoveLike(uid, bid int64) bool
 	ViewLikes(bid int64) *[]Like
+
+	//comments
+	AddComment(b *Comment) (bool, int64)
+	UpdateComment(u *Comment) bool
+	GetCommentList(bid, start, end int64) *[]Comment
+	ActivateComment(id int64) bool
+	DeactivateComment(id int64) bool
 }
