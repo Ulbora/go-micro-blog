@@ -87,4 +87,20 @@ const (
 
 	deactivateComment = "UPDATE comment SET active = false " +
 		"where id = ?"
+
+	insertUserAugh = "insert into user_auth (type, user_id, date_entered) " +
+		" values (?, ?, ?) "
+
+	selectUserAuthList = " SELECT id, type, user_id, date_entered " +
+		" from  user_auth " +
+		" where user_id = ? LIMIT ?, ? "
+
+	insertConfig = "insert into config (allow_auto_post, allow_auto_comment) " +
+		" values (?, ?) "
+
+	updateConfig = " UPDATE config SET allow_auto_post = ?, allow_auto_comment = ? " +
+		" where id = ? "
+
+	selectConfigList = " SELECT id, allow_auto_post, allow_auto_comment " +
+		" from  config "
 )

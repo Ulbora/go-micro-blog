@@ -1,0 +1,18 @@
+mode: set
+github.com/Ulbora/go-micro-blog/managers/configManager.go:28.45,31.18 3 1
+github.com/Ulbora/go-micro-blog/managers/configManager.go:31.18,33.3 1 1
+github.com/Ulbora/go-micro-blog/managers/configManager.go:34.2,34.12 1 1
+github.com/Ulbora/go-micro-blog/managers/sysmanager.go:39.36,41.15 2 1
+github.com/Ulbora/go-micro-blog/managers/sysmanager.go:41.15,44.3 2 1
+github.com/Ulbora/go-micro-blog/managers/sysmanager.go:44.8,47.3 2 1
+github.com/Ulbora/go-micro-blog/managers/sysmanager.go:48.2,48.10 1 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:28.54,30.14 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:30.14,32.34 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:32.34,34.11 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:34.11,37.5 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:40.2,40.13 1 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:44.55,46.14 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:46.14,48.52 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:48.52,50.11 2 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:50.11,52.5 1 1
+github.com/Ulbora/go-micro-blog/managers/userManager.go:55.2,55.13 1 1

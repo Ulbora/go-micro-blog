@@ -61,4 +61,13 @@ type BlogDB interface {
 	GetCommentList(bid, start, end int64) *[]Comment
 	ActivateComment(id int64) bool
 	DeactivateComment(id int64) bool
+
+	//user auth
+	AddUserAuth(b *UserAuth) (bool, int64)
+	GetUserAuthList(bid, start, end int64) *[]UserAuth
+
+	//config
+	AddConfig(b *Config) (bool, int64)
+	UpdateConfig(u *Config) bool
+	GetConfig() *[]Config
 }

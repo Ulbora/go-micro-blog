@@ -39,7 +39,6 @@ func (d *MyBlogDB) AddBlog(b *Blog) (bool, int64) {
 		d.Log.Debug("suc in add blog", suc)
 		d.Log.Debug("id in add blog", id)
 	}
-
 	return suc, id
 }
 
