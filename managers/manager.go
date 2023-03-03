@@ -34,7 +34,7 @@ type Manager interface {
 	// //h--EnableUser(uid int64) bool
 	// //h--DisableUser(uid int64) bool
 
-	// AddRole(name string) *ResponseID //logic
+	AddRole(name string) *ResponseID //logic
 	// //h--GetRole(name string) *db.Role
 	// //h--GetRoleList() *[]db.Role
 	// //h--DeleteRole(id int64) bool

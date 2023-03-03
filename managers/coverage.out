@@ -2,6 +2,10 @@ mode: set
 github.com/Ulbora/go-micro-blog/managers/configManager.go:28.45,31.18 3 1
 github.com/Ulbora/go-micro-blog/managers/configManager.go:31.18,33.3 1 1
 github.com/Ulbora/go-micro-blog/managers/configManager.go:34.2,34.12 1 1
+github.com/Ulbora/go-micro-blog/managers/roleManager.go:24.55,28.30 3 1
+github.com/Ulbora/go-micro-blog/managers/roleManager.go:28.30,30.10 2 1
+github.com/Ulbora/go-micro-blog/managers/roleManager.go:30.10,33.4 2 1
+github.com/Ulbora/go-micro-blog/managers/roleManager.go:35.2,35.13 1 1
 github.com/Ulbora/go-micro-blog/managers/sysmanager.go:39.36,41.15 2 1
 github.com/Ulbora/go-micro-blog/managers/sysmanager.go:41.15,44.3 2 1
 github.com/Ulbora/go-micro-blog/managers/sysmanager.go:44.8,47.3 2 1
