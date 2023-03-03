@@ -24,30 +24,28 @@ import (
 
 */
 
-// AddBlog AddBlog
-func (m *SysManager) AddBlog(b *db.Blog) *ResponseID {
-	var rtn ResponseID
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
+// AddLike AddLike
+func (m *SysManager) AddLike(l *db.Like) *Response {
+	var rtn Response
+	if l != nil {
+		us := m.DB.GetUserByID(l.UserID)
 		if us == nil || us.Active {
-			b.Active = m.allowAutoPost
-			suc, id := m.DB.AddBlog(b)
+			suc := m.DB.AddLike(l)
 			if suc {
 				rtn.Success = true
-				rtn.ID = id
 			}
 		}
 	}
 	return &rtn
 }
 
-// UpdateBlog UpdateBlog
-func (m *SysManager) UpdateBlog(b *db.Blog) *Response {
+// RemoveLike RemoveLike
+func (m *SysManager) RemoveLike(uid, bid int64) *Response {
 	var rtn Response
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
+	if uid != 0 && bid != 0 {
+		us := m.DB.GetUserByID(uid)
 		if us == nil || us.Active {
-			suc := m.DB.UpdateBlog(b)
+			suc := m.DB.RemoveLike(uid, bid)
 			if suc {
 				rtn.Success = true
 			}

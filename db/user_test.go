@@ -411,7 +411,6 @@ func TestMyBlogDB_DisableUser(t *testing.T) {
 	// 	Database: "go_micro_blog",
 	// }
 
-
 	db := gdb.MyDBMock{
 		Host:     "localhost:3306",
 		User:     "admin",
@@ -428,7 +427,6 @@ func TestMyBlogDB_DisableUser(t *testing.T) {
 	log := l.New()
 	log.SetLogLevel(lg.AllLevel)
 
-	
 	type fields struct {
 		DB  gdb.Database
 		Log lg.Log
@@ -464,6 +462,86 @@ func TestMyBlogDB_DisableUser(t *testing.T) {
 			d.DB.Connect()
 			if got := d.DisableUser(tt.args.uid); got != tt.want {
 				t.Errorf("MyBlogDB.DisableUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMyBlogDB_GetUserByID(t *testing.T) {
+
+	var fileName = "../../golang.png"
+	//var fileName = "../mailGmail.json"
+	//var mm mailFile
+	file, err := ioutil.ReadFile(fileName)
+	//file, err:= os.Open(fileName)
+	//file, err := os.ReadFile(fileName)
+	//defer file.Close()
+	var fileStr string
+	if err == nil {
+		fileStr = string(file)
+		// err := json.Unmarshal(file, &mm)
+		//fmt.Println("image err: ", err)
+	}
+
+	// db := gdb.MyDB{
+	// 	Host:     "localhost:3306",
+	// 	User:     "admin",
+	// 	Password: "admin",
+	// 	Database: "go_micro_blog",
+	// }
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	db.MockRow1 = &gdb.DbRow{
+		Row: []string{"1", "test@test.com", "testfff", "tester", fileStr, "2", "0"},
+	}
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	type args struct {
+		id int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *User
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			args: args{
+				id: 12,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.GetUserByID(tt.args.id); got.Email != "test@test.com" {
+				t.Errorf("MyBlogDB.GetUserByID() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -27,8 +27,8 @@ import (
 // Manager Manager
 type Manager interface {
 	// reads config from db or creates default if none
-	AddUser(u *db.User) *ResponseID //logic
-	UpdateUser(u *db.User) *Response
+	AddUser(u *db.User) *ResponseID  //logic
+	UpdateUser(u *db.User) *Response //logic
 	// //h--GetUser(email string) *db.User
 	// //h--GetUserList() *[]db.User
 	// //h--EnableUser(uid int64) bool
@@ -39,25 +39,25 @@ type Manager interface {
 	// //h--GetRoleList() *[]db.Role
 	// //h--DeleteRole(id int64) bool
 
-	// AddBlog(b *db.Blog) *ResponseID //logic
-	// UpdateBlog(u *db.Blog) bool    //logic
+	AddBlog(b *db.Blog) *ResponseID  //logic
+	UpdateBlog(b *db.Blog) *Response //logic
 	// //h--GetBlog(id int64) *db.Blog
 	// //h--GetBlogsByName(name string, start int64, end int64) *[]db.Blog
 	// //h--GetBlogList(start int64, end int64) *[]db.Blog
 	// //h--ActivateBlog(id int64) bool
 	// //h--DeactivateBlog(id int64) bool
 
-	// AddLike(l *db.Like) bool        //logic
-	// RemoveLike(uid, bid int64) bool //logic
+	AddLike(l *db.Like) *Response        //logic
+	RemoveLike(uid, bid int64) *Response //logic
 	// //h--ViewLikes(bid int64) *[]db.Like
 
-	// AddComment(b *db.Comment) *ResponseID //logic
-	// UpdateComment(u *db.Comment) bool    //logic
+	AddComment(c *db.Comment) *ResponseID //logic
+	UpdateComment(c *db.Comment) *Response    //logic
 	// //h--GetCommentList(bid, start, end int64) *[]db.Comment
 	// //h--ActivateComment(id int64) bool
 	// //h--DeactivateComment(id int64) bool
 
-	// AddUserAuth(b *db.UserAuth) *ResponseID //logic
+	AddUserAuth(a *db.UserAuth) *ResponseID //logic
 	// //h--GetUserAuthList(bid, start, end int64) *[]db.UserAuth
 
 	// //no--AddConfig(b *db.Config) *ResponseID //logoc

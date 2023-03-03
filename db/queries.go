@@ -14,6 +14,10 @@ const (
 		" from  user " +
 		" where email = ? "
 
+	selectUserByID = "SELECT id, email, first_name, last_name, image, role_id, active " +
+		" from  user " +
+		" where id = ? "
+
 	selectUserList = "SELECT id, email, first_name, last_name, image, role_id, active " +
 		" from  user "
 

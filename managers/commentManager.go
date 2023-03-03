@@ -24,32 +24,38 @@ import (
 
 */
 
-// AddBlog AddBlog
-func (m *SysManager) AddBlog(b *db.Blog) *ResponseID {
+// AddComment AddComment
+func (m *SysManager) AddComment(c *db.Comment) *ResponseID {
 	var rtn ResponseID
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
+	if c != nil {
+		us := m.DB.GetUserByID(c.UserID)
 		if us == nil || us.Active {
-			b.Active = m.allowAutoPost
-			suc, id := m.DB.AddBlog(b)
-			if suc {
-				rtn.Success = true
-				rtn.ID = id
+			b := m.DB.GetBlog(c.BlogID)
+			if b.Active {
+				c.Active = m.allowAutoComment
+				suc, id := m.DB.AddComment(c)
+				if suc {
+					rtn.Success = true
+					rtn.ID = id
+				}
 			}
 		}
 	}
 	return &rtn
 }
 
-// UpdateBlog UpdateBlog
-func (m *SysManager) UpdateBlog(b *db.Blog) *Response {
+// UpdateComment UpdateComment
+func (m *SysManager) UpdateComment(c *db.Comment) *Response {
 	var rtn Response
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
+	if c != nil {
+		us := m.DB.GetUserByID(c.UserID)
 		if us == nil || us.Active {
-			suc := m.DB.UpdateBlog(b)
-			if suc {
-				rtn.Success = true
+			b := m.DB.GetBlog(c.BlogID)
+			if b.Active {
+				suc := m.DB.UpdateComment(c)
+				if suc {
+					rtn.Success = true
+				}
 			}
 		}
 	}

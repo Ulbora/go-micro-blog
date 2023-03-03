@@ -68,6 +68,19 @@ func (d *MyBlogDB) GetUser(email string) *User {
 	return rtn
 }
 
+// GetUserByID GetUserById
+func (d *MyBlogDB) GetUserByID(id int64) *User {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []any
+	a = append(a, id)
+	row := d.DB.Get(selectUserByID, a...)
+	rtn := d.parseUserRow(&row.Row)
+
+	return rtn
+}
+
 // GetUserList GetUserList
 func (d *MyBlogDB) GetUserList() *[]User {
 	if !d.testConnection() {

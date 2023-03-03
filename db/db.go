@@ -31,6 +31,7 @@ type BlogDB interface {
 	AddUser(u *User) (bool, int64)
 	UpdateUser(u *User) bool
 	GetUser(email string) *User
+	GetUserByID(id int64) *User
 	GetUserList() *[]User
 	EnableUser(uid int64) bool
 	DisableUser(uid int64) bool

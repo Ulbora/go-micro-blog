@@ -24,32 +24,16 @@ import (
 
 */
 
-// AddBlog AddBlog
-func (m *SysManager) AddBlog(b *db.Blog) *ResponseID {
+// AddUserAuth AddUserAuth
+func (m *SysManager) AddUserAuth(a *db.UserAuth) *ResponseID {
 	var rtn ResponseID
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
+	if a != nil {
+		us := m.DB.GetUserByID(a.UserID)
 		if us == nil || us.Active {
-			b.Active = m.allowAutoPost
-			suc, id := m.DB.AddBlog(b)
+			suc, id := m.DB.AddUserAuth(a)
 			if suc {
 				rtn.Success = true
 				rtn.ID = id
-			}
-		}
-	}
-	return &rtn
-}
-
-// UpdateBlog UpdateBlog
-func (m *SysManager) UpdateBlog(b *db.Blog) *Response {
-	var rtn Response
-	if b != nil {
-		us := m.DB.GetUserByID(b.UserID)
-		if us == nil || us.Active {
-			suc := m.DB.UpdateBlog(b)
-			if suc {
-				rtn.Success = true
 			}
 		}
 	}
