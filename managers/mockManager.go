@@ -40,6 +40,11 @@ type MockManager struct {
 	MockConfig        db.Config
 }
 
+// New New
+func (m *MockManager) New() Manager {
+	return m
+}
+
 // AddUser AddUser
 func (m *MockManager) AddUser(u *db.User) *ResponseID {
 	return &m.MockAddUser

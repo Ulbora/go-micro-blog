@@ -31,6 +31,7 @@ type Manager interface {
 	UpdateUser(u *db.User) *Response //logic
 	// //h--GetUser(email string) *db.User
 	// //h--GetUserList() *[]db.User
+	//GetBlogList()*[]db.User
 	// //h--EnableUser(uid int64) bool
 	// //h--DisableUser(uid int64) bool
 
@@ -51,8 +52,8 @@ type Manager interface {
 	RemoveLike(uid, bid int64) *Response //logic
 	// //h--ViewLikes(bid int64) *[]db.Like
 
-	AddComment(c *db.Comment) *ResponseID //logic
-	UpdateComment(c *db.Comment) *Response    //logic
+	AddComment(c *db.Comment) *ResponseID  //logic
+	UpdateComment(c *db.Comment) *Response //logic
 	// //h--GetCommentList(bid, start, end int64) *[]db.Comment
 	// //h--ActivateComment(id int64) bool
 	// //h--DeactivateComment(id int64) bool

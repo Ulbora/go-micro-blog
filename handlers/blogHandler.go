@@ -1,6 +1,14 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
+
+	mux "github.com/GolangToolKits/grrt"
+	db "github.com/Ulbora/go-micro-blog/db"
+)
 
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
@@ -24,17 +32,81 @@ import "net/http"
 
 // AddBlog AddBlog
 func (h *MCHandler) AddBlog(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var bl db.Blog
+		bs, err := h.processBody(r, &bl)
+		h.Log.Debug("bs: ", bs)
+		h.Log.Debug("err: ", err)
+		if !bs || err != nil || !h.processAPIKey(r) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			br := h.Manager.AddBlog(&bl)
+			h.Log.Debug("br: ", br)
+			if br.Success && br.ID != 0 {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(br)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // UpdateBlog UpdateBlog
 func (h *MCHandler) UpdateBlog(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var ubl db.Blog
+		ubs, err := h.processBody(r, &ubl)
+		h.Log.Debug("bs: ", ubs)
+		h.Log.Debug("err: ", err)
+		if !ubs || err != nil || !h.processAPIKey(r) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			br := h.Manager.UpdateBlog(&ubl)
+			h.Log.Debug("br: ", br)
+			if br.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(br)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // GetBlog GetBlog
 func (h *MCHandler) GetBlog(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 {
+		var bidStr = vars["id"]
+		bid, biderr := strconv.ParseInt(bidStr, 10, 64)
+		if biderr == nil {
+			blg := h.DB.GetBlog(bid)
+			if blg != nil && blg.Active {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(blg)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // GetBlogByName GetBlogByName

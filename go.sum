@@ -6,5 +6,7 @@ github.com/GolangToolKits/go-mysql v1.0.3 h1:/SGHhOsWdxYjdA6/Phew0dqV1gIgbLazRQt
 github.com/GolangToolKits/go-mysql v1.0.3/go.mod h1:1diKsrmGcWhkWvhRaWqMREyxaIAPjm5UKoZpoQ47ezw=
 github.com/GolangToolKits/go-mysql v1.0.4 h1:f71xfXadYAxt2piVPpyTS1Yp9zErYzlwJuG/44Y1ixs=
 github.com/GolangToolKits/go-mysql v1.0.4/go.mod h1:1diKsrmGcWhkWvhRaWqMREyxaIAPjm5UKoZpoQ47ezw=
+github.com/GolangToolKits/grrt v1.0.0 h1:tRnUAAikhzo2CwQTSBThpIB5EiZ+rxkjSzrtyMRFIDg=
+github.com/GolangToolKits/grrt v1.0.0/go.mod h1:XBsoZbeXQLdeM39Bb7T1SPg+DrXV2ZnXGZ7w/vobDxQ=
 github.com/go-sql-driver/mysql v1.7.0 h1:ueSltNNllEqE3qcWBTD0iQd3IpL/6U+mJxLkazJ7YPc=
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=

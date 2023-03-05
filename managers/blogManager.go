@@ -55,3 +55,5 @@ func (m *SysManager) UpdateBlog(b *db.Blog) *Response {
 	}
 	return &rtn
 }
+
+// GetBlogList
