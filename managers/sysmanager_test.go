@@ -50,7 +50,7 @@ func TestSysManager_New(t *testing.T) {
 			name: "test 1",
 			fields: fields{
 				DB: &db.MyBlogDB{
-					DB:  &mdb,
+					DB:  mdb.New(),
 					Log: log,
 				},
 			},
