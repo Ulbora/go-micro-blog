@@ -55,7 +55,7 @@ type Manager interface {
 
 	AddComment(c *db.Comment) *ResponseID  //logic
 	UpdateComment(c *db.Comment) *Response //logic
-	// //h--GetCommentList(bid, start, end int64) *[]db.Comment
+	GetCommentList(bid, start, end int64) *[]db.Comment
 	// //h--ActivateComment(id int64) bool
 	// //h--DeactivateComment(id int64) bool
 

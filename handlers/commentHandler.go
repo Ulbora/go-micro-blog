@@ -1,6 +1,15 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
+
+	mux "github.com/GolangToolKits/grrt"
+	db "github.com/Ulbora/go-micro-blog/db"
+	m "github.com/Ulbora/go-micro-blog/managers"
+)
 
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
@@ -24,25 +33,126 @@ import "net/http"
 
 // AddComment AddComment
 func (h *MCHandler) AddComment(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var cm db.Comment
+		cs, err := h.processBody(r, &cm)
+		h.Log.Debug("cs: ", cs)
+		h.Log.Debug("err: ", err)
+		if !cs || err != nil || !h.processAPIKey(r) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			cr := h.Manager.AddComment(&cm)
+			h.Log.Debug("cr: ", cr)
+			if cr.Success && cr.ID != 0 {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(cr)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // UpdateComment UpdateComment
 func (h *MCHandler) UpdateComment(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var cm db.Comment
+		cms, err := h.processBody(r, &cm)
+		h.Log.Debug("bs: ", cms)
+		h.Log.Debug("err: ", err)
+		if !cms || err != nil || !h.processAPIKey(r) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			cr := h.Manager.UpdateComment(&cm)
+			h.Log.Debug("cr: ", cr)
+			if cr.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(cr)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // GetCommentList GetCommentList
 func (h *MCHandler) GetCommentList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 3 {
+		var bidStr = vars["bid"]
+		var stStr = vars["start"]
+		var edStr = vars["end"]
+		bid, berr := strconv.ParseInt(bidStr, 10, 64)
+		st, sterr := strconv.ParseInt(stStr, 10, 64)
+		ed, ederr := strconv.ParseInt(edStr, 10, 64)
 
+		if berr == nil && sterr == nil && ederr == nil {
+			clg := h.Manager.GetCommentList(bid, st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(clg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // ActivateComment ActivateComment
 func (h *MCHandler) ActivateComment(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
+		var idStr = vars["id"]
+		id, sterr := strconv.ParseInt(idStr, 10, 64)
+		if sterr == nil {
+			suc := h.DB.ActivateComment(id)
+			var res m.Response
+			res.Success = suc
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(res)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // DectivateComment DectivateComment
 func (h *MCHandler) DectivateComment(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
+		var idStr = vars["id"]
+		id, iderr := strconv.ParseInt(idStr, 10, 64)
+		if iderr == nil {
+			suc := h.DB.DeactivateComment(id)
+			var res m.Response
+			res.Success = suc
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(res)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }

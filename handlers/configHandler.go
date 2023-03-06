@@ -1,6 +1,13 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/Ulbora/go-micro-blog/db"
+	m "github.com/Ulbora/go-micro-blog/managers"
+)
 
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
@@ -24,10 +31,42 @@ import "net/http"
 
 // UpdateConfig UpdateConfig
 func (h *MCHandler) UpdateConfig(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var ucf db.Config
+		ucs, err := h.processBody(r, &ucf)
+		h.Log.Debug("ucs: ", ucs)
+		h.Log.Debug("err: ", err)
+		if !ucs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		} else {
+			br := h.DB.UpdateConfig(&ucf)
+			var res m.Response
+			res.Success = br
+			h.Log.Debug("br: ", br)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // GetConfig GetConfig
 func (h *MCHandler) GetConfig(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)	
+	if !h.processAPIAdminKey(r) {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+	} else {
+		cfg := h.Manager.GetConfig()
+		w.WriteHeader(http.StatusOK)
+		resJSON, _ := json.Marshal(cfg)
+		fmt.Fprint(w, string(resJSON))
+	}
 }

@@ -22,7 +22,7 @@ import "net/http"
 
 */
 
-// AddLike AddLike
+// AddLike AddLike //
 func (h *MCHandler) AddLike(w http.ResponseWriter, r *http.Request) {
 
 }

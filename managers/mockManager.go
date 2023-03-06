@@ -37,6 +37,7 @@ type MockManager struct {
 	MockRemoveLike    Response
 	MockAddComment    ResponseID
 	MockUpdateComment Response
+	MockCommentList   []db.Comment
 	MockAddUserAuth   ResponseID
 	MockConfig        db.Config
 }
@@ -101,6 +102,11 @@ func (m *MockManager) AddComment(c *db.Comment) *ResponseID {
 // UpdateComment UpdateComment
 func (m *MockManager) UpdateComment(c *db.Comment) *Response {
 	return &m.MockUpdateComment
+}
+
+// GetCommentList GetCommentList
+func (m *MockManager) GetCommentList(bid, start, end int64) *[]db.Comment {
+	return &m.MockCommentList
 }
 
 // AddUserAuth AddUserAuth

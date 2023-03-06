@@ -170,3 +170,73 @@ func TestSysManager_UpdateComment(t *testing.T) {
 		})
 	}
 }
+
+func TestSysManager_GetCommentList(t *testing.T) {
+
+	mdb := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+
+	mdb.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "some test blog stuff", "4", "5", "true"},
+			{"2", "some test blog stuff", "4", "6", "false"}},
+	}
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB               db.BlogDB
+		Log              lg.Log
+		allowAutoPost    bool
+		allowAutoComment bool
+	}
+	type args struct {
+		bid   int64
+		start int64
+		end   int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *[]db.Comment
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+			},
+			args: args{
+				bid:2,
+				start: 0,
+				end:   100,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &SysManager{
+				DB:               tt.fields.DB,
+				Log:              tt.fields.Log,
+				allowAutoPost:    tt.fields.allowAutoPost,
+				allowAutoComment: tt.fields.allowAutoComment,
+			}
+			if got := m.GetCommentList(tt.args.bid, tt.args.start, tt.args.end);  len(*got) != 1{
+				t.Errorf("SysManager.GetCommentList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

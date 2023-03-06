@@ -8,6 +8,7 @@ import (
 
 	mux "github.com/GolangToolKits/grrt"
 	db "github.com/Ulbora/go-micro-blog/db"
+	m "github.com/Ulbora/go-micro-blog/managers"
 )
 
 /*
@@ -160,15 +161,70 @@ func (h *MCHandler) GetBlogList(w http.ResponseWriter, r *http.Request) {
 
 // GetAdminBlogList GetBlogList
 func (h *MCHandler) GetAdminBlogList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 2 && h.processAPIAdminKey(r) {
+		var stStr = vars["start"]
+		var edStr = vars["end"]
+		st, sterr := strconv.ParseInt(stStr, 10, 64)
+		ed, ederr := strconv.ParseInt(edStr, 10, 64)
 
+		if sterr == nil && ederr == nil {
+			blg := h.DB.GetBlogList(st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(blg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // ActivateBlog ActivateBlog
 func (h *MCHandler) ActivateBlog(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
+		var idStr = vars["id"]
+		id, sterr := strconv.ParseInt(idStr, 10, 64)
+		if sterr == nil {
+			suc := h.DB.ActivateBlog(id)
+			var res m.Response
+			res.Success = suc
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(res)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // DectivateBlog DectivateBlog
 func (h *MCHandler) DectivateBlog(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
+		var idStr = vars["id"]
+		id, sterr := strconv.ParseInt(idStr, 10, 64)
+		if sterr == nil {
+			suc := h.DB.DeactivateBlog(id)
+			var res m.Response
+			res.Success = suc
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(res)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }

@@ -61,3 +61,17 @@ func (m *SysManager) UpdateComment(c *db.Comment) *Response {
 	}
 	return &rtn
 }
+
+// GetCommentList GetCommentList
+func (m *SysManager) GetCommentList(bid, start, end int64) *[]db.Comment {
+	var rtn = []db.Comment{}
+	cl := m.DB.GetCommentList(bid, start, end)
+	if cl != nil {
+		for i := range *cl {
+			if (*cl)[i].Active {
+				rtn = append(rtn, (*cl)[i])
+			}
+		}
+	}
+	return &rtn
+}
