@@ -32,6 +32,7 @@ type MockManager struct {
 	MockAddRole       ResponseID
 	MockAddBlog       ResponseID
 	MockUpdateBlog    Response
+	MockBlogList      []db.Blog
 	MockAddLike       Response
 	MockRemoveLike    Response
 	MockAddComment    ResponseID
@@ -68,6 +69,16 @@ func (m *MockManager) AddBlog(b *db.Blog) *ResponseID {
 // UpdateBlog UpdateBlog
 func (m *MockManager) UpdateBlog(b *db.Blog) *Response {
 	return &m.MockUpdateBlog
+}
+
+// GetBlogList GetBlogList
+func (m *MockManager) GetBlogList(start int64, end int64) *[]db.Blog {
+	return &m.MockBlogList
+}
+
+// GetBlogByName GetBlogByName
+func (m *MockManager) GetBlogByName(name string, start int64, end int64) *[]db.Blog {
+	return &m.MockBlogList
 }
 
 // AddLike AddLike

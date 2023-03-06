@@ -111,11 +111,55 @@ func (h *MCHandler) GetBlog(w http.ResponseWriter, r *http.Request) {
 
 // GetBlogByName GetBlogByName
 func (h *MCHandler) GetBlogByName(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 3 {
+		var name = vars["name"]
+		var stStr = vars["start"]
+		var edStr = vars["end"]
+		st, sterr := strconv.ParseInt(stStr, 10, 64)
+		ed, ederr := strconv.ParseInt(edStr, 10, 64)
 
+		if sterr == nil && ederr == nil {
+			blg := h.Manager.GetBlogByName(name, st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(blg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // GetBlogList GetBlogList
 func (h *MCHandler) GetBlogList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 2 {
+		var stStr = vars["start"]
+		var edStr = vars["end"]
+		st, sterr := strconv.ParseInt(stStr, 10, 64)
+		ed, ederr := strconv.ParseInt(edStr, 10, 64)
+
+		if sterr == nil && ederr == nil {
+			blg := h.Manager.GetBlogList(st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(blg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+// GetAdminBlogList GetBlogList
+func (h *MCHandler) GetAdminBlogList(w http.ResponseWriter, r *http.Request) {
 
 }
 

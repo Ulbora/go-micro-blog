@@ -3,6 +3,7 @@ package managers
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	db "github.com/Ulbora/go-micro-blog/db"
 )
@@ -1075,6 +1076,185 @@ func TestMockManager_GetConfig(t *testing.T) {
 			}
 			if got := m.GetConfig(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MockManager.GetConfig() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMockManager_GetBlogList(t *testing.T) {
+
+	var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
+		{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
+
+	type fields struct {
+		MockAddUser       ResponseID
+		MockUpdateUser    Response
+		MockAddRole       ResponseID
+		MockAddBlog       ResponseID
+		MockUpdateBlog    Response
+		MockBlogList      []db.Blog
+		MockAddLike       Response
+		MockRemoveLike    Response
+		MockAddComment    ResponseID
+		MockUpdateComment Response
+		MockAddUserAuth   ResponseID
+		MockConfig        db.Config
+	}
+	type args struct {
+		start int64
+		end   int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *[]db.Blog
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				MockBlogList: bl,
+			},
+			args: args{
+				start: 0,
+				end:   5,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MockManager{
+				MockAddUser:       tt.fields.MockAddUser,
+				MockUpdateUser:    tt.fields.MockUpdateUser,
+				MockAddRole:       tt.fields.MockAddRole,
+				MockAddBlog:       tt.fields.MockAddBlog,
+				MockUpdateBlog:    tt.fields.MockUpdateBlog,
+				MockBlogList:      tt.fields.MockBlogList,
+				MockAddLike:       tt.fields.MockAddLike,
+				MockRemoveLike:    tt.fields.MockRemoveLike,
+				MockAddComment:    tt.fields.MockAddComment,
+				MockUpdateComment: tt.fields.MockUpdateComment,
+				MockAddUserAuth:   tt.fields.MockAddUserAuth,
+				MockConfig:        tt.fields.MockConfig,
+			}
+			if got := m.GetBlogList(tt.args.start, tt.args.end); len(*got) != 2 {
+				t.Errorf("MockManager.GetBlogList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMockManager_GetBlogByName(t *testing.T) {
+
+	var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
+		{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
+
+	type fields struct {
+		MockAddUser       ResponseID
+		MockUpdateUser    Response
+		MockAddRole       ResponseID
+		MockAddBlog       ResponseID
+		MockUpdateBlog    Response
+		MockBlogList      []db.Blog
+		MockAddLike       Response
+		MockRemoveLike    Response
+		MockAddComment    ResponseID
+		MockUpdateComment Response
+		MockAddUserAuth   ResponseID
+		MockConfig        db.Config
+	}
+	type args struct {
+		name  string
+		start int64
+		end   int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *[]db.Blog
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				MockBlogList: bl,
+			},
+			args: args{
+				name:  "test",
+				start: 0,
+				end:   5,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MockManager{
+				MockAddUser:       tt.fields.MockAddUser,
+				MockUpdateUser:    tt.fields.MockUpdateUser,
+				MockAddRole:       tt.fields.MockAddRole,
+				MockAddBlog:       tt.fields.MockAddBlog,
+				MockUpdateBlog:    tt.fields.MockUpdateBlog,
+				MockBlogList:      tt.fields.MockBlogList,
+				MockAddLike:       tt.fields.MockAddLike,
+				MockRemoveLike:    tt.fields.MockRemoveLike,
+				MockAddComment:    tt.fields.MockAddComment,
+				MockUpdateComment: tt.fields.MockUpdateComment,
+				MockAddUserAuth:   tt.fields.MockAddUserAuth,
+				MockConfig:        tt.fields.MockConfig,
+			}
+			if got := m.GetBlogByName(tt.args.name, tt.args.start, tt.args.end); len(*got) != 2 {
+				t.Errorf("MockManager.GetBlogByName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMockManager_New(t *testing.T) {
+	type fields struct {
+		MockAddUser       ResponseID
+		MockUpdateUser    Response
+		MockAddRole       ResponseID
+		MockAddBlog       ResponseID
+		MockUpdateBlog    Response
+		MockBlogList      []db.Blog
+		MockAddLike       Response
+		MockRemoveLike    Response
+		MockAddComment    ResponseID
+		MockUpdateComment Response
+		MockAddUserAuth   ResponseID
+		MockConfig        db.Config
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   Manager
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MockManager{
+				MockAddUser:       tt.fields.MockAddUser,
+				MockUpdateUser:    tt.fields.MockUpdateUser,
+				MockAddRole:       tt.fields.MockAddRole,
+				MockAddBlog:       tt.fields.MockAddBlog,
+				MockUpdateBlog:    tt.fields.MockUpdateBlog,
+				MockBlogList:      tt.fields.MockBlogList,
+				MockAddLike:       tt.fields.MockAddLike,
+				MockRemoveLike:    tt.fields.MockRemoveLike,
+				MockAddComment:    tt.fields.MockAddComment,
+				MockUpdateComment: tt.fields.MockUpdateComment,
+				MockAddUserAuth:   tt.fields.MockAddUserAuth,
+				MockConfig:        tt.fields.MockConfig,
+			}
+			if got := m.New(); got == nil {
+				t.Errorf("MockManager.New() = %v, want %v", got, tt.want)
 			}
 		})
 	}

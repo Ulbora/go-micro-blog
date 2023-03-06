@@ -31,7 +31,6 @@ type Manager interface {
 	UpdateUser(u *db.User) *Response //logic
 	// //h--GetUser(email string) *db.User
 	// //h--GetUserList() *[]db.User
-	//GetBlogList()*[]db.User
 	// //h--EnableUser(uid int64) bool
 	// //h--DisableUser(uid int64) bool
 
@@ -42,9 +41,11 @@ type Manager interface {
 
 	AddBlog(b *db.Blog) *ResponseID  //logic
 	UpdateBlog(b *db.Blog) *Response //logic
+	GetBlogList(start int64, end int64) *[]db.Blog
+	GetBlogByName(name string, start int64, end int64) *[]db.Blog
 	// //h--GetBlog(id int64) *db.Blog
 	// //h--GetBlogsByName(name string, start int64, end int64) *[]db.Blog
-	// //h--GetBlogList(start int64, end int64) *[]db.Blog
+	// //h--GetAdminBlogList(start int64, end int64) *[]db.Blog
 	// //h--ActivateBlog(id int64) bool
 	// //h--DeactivateBlog(id int64) bool
 

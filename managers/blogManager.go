@@ -56,4 +56,30 @@ func (m *SysManager) UpdateBlog(b *db.Blog) *Response {
 	return &rtn
 }
 
-// GetBlogList
+// GetBlogList GetBlogList
+func (m *SysManager) GetBlogList(start int64, end int64) *[]db.Blog {
+	var rtn = []db.Blog{}
+	bl := m.DB.GetBlogList(start, end)
+	if bl != nil {
+		for i := range *bl {
+			if (*bl)[i].Active {
+				rtn = append(rtn, (*bl)[i])
+			}
+		}
+	}
+	return &rtn
+}
+
+// GetBlogByName GetBlogByName
+func (m *SysManager) GetBlogByName(name string, start int64, end int64) *[]db.Blog {
+	var rtn = []db.Blog{}
+	bl := m.DB.GetBlogsByName(name, start, end)
+	if bl != nil {
+		for i := range *bl {
+			if (*bl)[i].Active {
+				rtn = append(rtn, (*bl)[i])
+			}
+		}
+	}
+	return &rtn
+}

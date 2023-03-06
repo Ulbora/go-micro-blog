@@ -41,6 +41,7 @@ type Handler interface {
 	GetBlog(w http.ResponseWriter, r *http.Request)
 	GetBlogByName(w http.ResponseWriter, r *http.Request)
 	GetBlogList(w http.ResponseWriter, r *http.Request)
+	GetAdminBlogList(w http.ResponseWriter, r *http.Request)
 	ActivateBlog(w http.ResponseWriter, r *http.Request)
 	DectivateBlog(w http.ResponseWriter, r *http.Request)
 

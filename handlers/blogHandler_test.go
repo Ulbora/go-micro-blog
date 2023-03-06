@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	lg "github.com/GolangToolKits/go-level-logger"
 	gdb "github.com/GolangToolKits/go-mysql"
@@ -308,8 +309,6 @@ func TestMCHandler_GetBlog(t *testing.T) {
 	}
 	w2 := httptest.NewRecorder()
 
-
-
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
 	vars3 := map[string]string{
 		"id": "n1",
@@ -317,16 +316,13 @@ func TestMCHandler_GetBlog(t *testing.T) {
 	r3 = mux.SetURLVars(r3, vars3)
 	w3 := httptest.NewRecorder()
 
-
 	r4, _ := http.NewRequest("GET", "/ffllist", nil)
 	vars4 := map[string]string{
-		"id": "1",
+		"id":  "1",
 		"idd": "2",
 	}
 	r4 = mux.SetURLVars(r4, vars4)
 	w4 := httptest.NewRecorder()
-
-
 
 	type fields struct {
 		DB          db.BlogDB
@@ -352,7 +348,7 @@ func TestMCHandler_GetBlog(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:log,
+				Log: log,
 			},
 			args: args{
 				w: w,
@@ -366,7 +362,7 @@ func TestMCHandler_GetBlog(t *testing.T) {
 					DB:  &mdb2,
 					Log: log,
 				},
-				Log:log,
+				Log: log,
 			},
 			args: args{
 				w: w2,
@@ -380,7 +376,7 @@ func TestMCHandler_GetBlog(t *testing.T) {
 					DB:  &mdb2,
 					Log: log,
 				},
-				Log:log,
+				Log: log,
 			},
 			args: args{
 				w: w3,
@@ -394,7 +390,7 @@ func TestMCHandler_GetBlog(t *testing.T) {
 					DB:  &mdb2,
 					Log: log,
 				},
-				Log:log,
+				Log: log,
 			},
 			args: args{
 				w: w4,
@@ -420,6 +416,289 @@ func TestMCHandler_GetBlog(t *testing.T) {
 				t.Fail()
 			}
 
+		})
+	}
+}
+
+func TestMCHandler_GetBlogByName(t *testing.T) {
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+	var mg m.MockManager
+	var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
+		{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
+
+	mg.MockBlogList = bl
+
+	// aJSON := ioutil.NopCloser(bytes.NewBufferString(`{"name":"test", "userId": 5}`))
+
+	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars := map[string]string{
+		"name":  "test",
+		"start": "1",
+		"end":   "5",
+	}
+	r = mux.SetURLVars(r, vars)
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+
+
+
+	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars2 := map[string]string{
+		"name":  "test",
+		"start": "1c",
+		"end":   "5",
+	}
+	r2 = mux.SetURLVars(r2, vars2)
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w2 := httptest.NewRecorder()
+
+
+
+	r3, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars3 := map[string]string{
+		//"name":  "test",
+		"start": "1c",
+		"end":   "5",
+	}
+	r3 = mux.SetURLVars(r3, vars3)
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w3 := httptest.NewRecorder()
+
+
+
+
+	type fields struct {
+		DB          db.BlogDB
+		Log         lg.Log
+		Manager     m.Manager
+		APIKey      string
+		APIAdminKey string
+	}
+	type args struct {
+		w http.ResponseWriter
+		r *http.Request
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w,
+				r: r,
+			},
+		},
+		{
+			name: "test 2",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w2,
+				r: r2,
+			},
+		},
+		{
+			name: "test 3",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w3,
+				r: r3,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := &MCHandler{
+				DB:          tt.fields.DB,
+				Log:         tt.fields.Log,
+				Manager:     tt.fields.Manager,
+				APIKey:      tt.fields.APIKey,
+				APIAdminKey: tt.fields.APIAdminKey,
+			}
+			h.GetBlogByName(tt.args.w, tt.args.r)
+
+			var res []db.Blog
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			json.Unmarshal(body, &res)
+			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+				t.Fail()
+			}
+
+		})
+	}
+}
+
+func TestMCHandler_GetBlogList(t *testing.T) {
+
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+	var mg m.MockManager
+	var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
+		{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
+
+	mg.MockBlogList = bl
+
+	// aJSON := ioutil.NopCloser(bytes.NewBufferString(`{"name":"test", "userId": 5}`))
+
+	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars := map[string]string{		
+		"start": "1",
+		"end":   "5",
+	}
+	r = mux.SetURLVars(r, vars)
+	
+
+	w := httptest.NewRecorder()
+
+
+
+
+	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars2 := map[string]string{
+		"name":  "test",
+		"start": "1c",
+		"end":   "5",
+	}
+	r2 = mux.SetURLVars(r2, vars2)
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w2 := httptest.NewRecorder()
+
+
+
+	r3, _ := http.NewRequest("GET", "/ffllist", nil)
+	vars3 := map[string]string{
+		//"name":  "test",
+		"start": "1c",
+		"end":   "5",
+	}
+	r3 = mux.SetURLVars(r3, vars3)
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w3 := httptest.NewRecorder()
+
+
+
+
+
+
+	type fields struct {
+		DB          db.BlogDB
+		Log         lg.Log
+		Manager     m.Manager
+		APIKey      string
+		APIAdminKey string
+	}
+	type args struct {
+		w http.ResponseWriter
+		r *http.Request
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w,
+				r: r,
+			},
+		},
+		{
+			name: "test 2",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w2,
+				r: r2,
+			},
+		},
+		{
+			name: "test 3",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					//DB:  &mdb2,
+					Log: log,
+				},
+				Log:     log,
+				Manager: mg.New(),
+			},
+			args: args{
+				w: w3,
+				r: r3,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := &MCHandler{
+				DB:          tt.fields.DB,
+				Log:         tt.fields.Log,
+				Manager:     tt.fields.Manager,
+				APIKey:      tt.fields.APIKey,
+				APIAdminKey: tt.fields.APIAdminKey,
+			}
+			h.GetBlogList(tt.args.w, tt.args.r)
+
+			var res []db.Blog
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			json.Unmarshal(body, &res)
+			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+				t.Fail()
+			}
 		})
 	}
 }
