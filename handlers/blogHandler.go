@@ -43,7 +43,7 @@ func (h *MCHandler) AddBlog(w http.ResponseWriter, r *http.Request) {
 		h.Log.Debug("bs: ", bs)
 		h.Log.Debug("err: ", err)
 		if !bs || err != nil || !h.processAPIKey(r) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			br := h.Manager.AddBlog(&bl)
 			h.Log.Debug("br: ", br)
@@ -70,7 +70,7 @@ func (h *MCHandler) UpdateBlog(w http.ResponseWriter, r *http.Request) {
 		h.Log.Debug("bs: ", ubs)
 		h.Log.Debug("err: ", err)
 		if !ubs || err != nil || !h.processAPIKey(r) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			br := h.Manager.UpdateBlog(&ubl)
 			h.Log.Debug("br: ", br)

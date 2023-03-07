@@ -43,7 +43,7 @@ func (h *MCHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 		h.Log.Debug("cs: ", cs)
 		h.Log.Debug("err: ", err)
 		if !cs || err != nil || !h.processAPIKey(r) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			cr := h.Manager.AddComment(&cm)
 			h.Log.Debug("cr: ", cr)
@@ -70,7 +70,7 @@ func (h *MCHandler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 		h.Log.Debug("bs: ", cms)
 		h.Log.Debug("err: ", err)
 		if !cms || err != nil || !h.processAPIKey(r) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			cr := h.Manager.UpdateComment(&cm)
 			h.Log.Debug("cr: ", cr)

@@ -22,6 +22,10 @@ import "net/http"
 
 */
 
+const(
+	parseBodyErr = "Failed to process body"
+)
+
 // Handler Handler
 type Handler interface {
 	AddUser(w http.ResponseWriter, r *http.Request)

@@ -41,7 +41,7 @@ func (h *MCHandler) UpdateConfig(w http.ResponseWriter, r *http.Request) {
 		h.Log.Debug("ucs: ", ucs)
 		h.Log.Debug("err: ", err)
 		if !ucs || err != nil || !h.processAPIAdminKey(r) {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			br := h.DB.UpdateConfig(&ucf)
 			var res m.Response
@@ -60,7 +60,7 @@ func (h *MCHandler) UpdateConfig(w http.ResponseWriter, r *http.Request) {
 
 // GetConfig GetConfig
 func (h *MCHandler) GetConfig(w http.ResponseWriter, r *http.Request) {
-	h.setContentType(w)	
+	h.setContentType(w)
 	if !h.processAPIAdminKey(r) {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 	} else {
