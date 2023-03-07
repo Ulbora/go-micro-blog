@@ -65,7 +65,7 @@ type BlogDB interface {
 
 	//user auth
 	AddUserAuth(b *UserAuth) (bool, int64)
-	GetUserAuthList(bid, start, end int64) *[]UserAuth
+	GetUserAuthList(uid, start, end int64) *[]UserAuth
 
 	//config
 	AddConfig(b *Config) (bool, int64)
