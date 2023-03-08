@@ -257,7 +257,7 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 			}
 			h.UpdateBlog(tt.args.w, tt.args.r)
 
-			var res m.ResponseID
+			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
 			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {

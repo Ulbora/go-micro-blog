@@ -1,6 +1,13 @@
 package handlers
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	mux "github.com/GolangToolKits/grrt"
+	db "github.com/Ulbora/go-micro-blog/db"
+)
 
 /*
  Copyright (C) 2023 Ulbora Labs LLC. (www.ulboralabs.com)
@@ -24,22 +31,85 @@ import "net/http"
 
 // AddUser AddUser
 func (h *MCHandler) AddUser(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var bl db.User
+		bs, err := h.processBody(r, &bl)
+		h.Log.Debug("bs: ", bs)
+		h.Log.Debug("err: ", err)
+		if !bs || err != nil || !h.processAPIKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			br := h.Manager.AddUser(&bl)
+			h.Log.Debug("br: ", br)
+			if br.Success && br.ID != 0 {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(br)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // UpdateUser UpdateUser
 func (h *MCHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var ubl db.User
+		ubs, err := h.processBody(r, &ubl)
+		h.Log.Debug("bs: ", ubs)
+		h.Log.Debug("err: ", err)
+		if !ubs || err != nil || !h.processAPIKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			ur := h.Manager.UpdateUser(&ubl)
+			h.Log.Debug("br: ", ur)
+			if ur.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(ur)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
 }
 
 // GetUser GetUser
 func (h *MCHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIKey(r) {
+		var em = vars["email"]
+		usr := h.DB.GetUser(em)
+		w.WriteHeader(http.StatusOK)
+		resJSON, _ := json.Marshal(usr)
+		fmt.Fprint(w, string(resJSON))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // GetUserList GetUserList
 func (h *MCHandler) GetUserList(w http.ResponseWriter, r *http.Request) {
-
+	h.setContentType(w)
+	if h.processAPIAdminKey(r) {
+		blg := h.DB.GetUserList()
+		w.WriteHeader(http.StatusOK)
+		resJSON, _ := json.Marshal(blg)
+		fmt.Fprint(w, string(resJSON))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 // EnableUser EnableUser
