@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	mux "github.com/GolangToolKits/grrt"
 	db "github.com/Ulbora/go-micro-blog/db"
@@ -117,45 +116,57 @@ func (h *MCHandler) GetUserList(w http.ResponseWriter, r *http.Request) {
 // EnableUser EnableUser
 func (h *MCHandler) EnableUser(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, sterr := strconv.ParseInt(idStr, 10, 64)
-		if sterr == nil {
-			suc := h.DB.EnableUser(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var ubl db.User
+		ubs, err := h.processBody(r, &ubl)
+		h.Log.Debug("bs: ", ubs)
+		h.Log.Debug("err: ", err)
+		if !ubs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			ur := h.DB.EnableUser(ubl.ID)
+			var res m.Response
+			res.Success = ur
+			h.Log.Debug("br: ", ur)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }
 
 // DisableUser DisableUser
 func (h *MCHandler) DisableUser(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, sterr := strconv.ParseInt(idStr, 10, 64)
-		if sterr == nil {
-			suc := h.DB.DisableUser(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var ubl db.User
+		ubs, err := h.processBody(r, &ubl)
+		h.Log.Debug("bs: ", ubs)
+		h.Log.Debug("err: ", err)
+		if !ubs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			ur := h.DB.DisableUser(ubl.ID)
+			var res m.Response
+			res.Success = ur
+			h.Log.Debug("br: ", ur)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }

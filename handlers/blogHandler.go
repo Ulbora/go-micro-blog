@@ -117,6 +117,7 @@ func (h *MCHandler) GetBlogByName(w http.ResponseWriter, r *http.Request) {
 	h.Log.Debug("vars: ", len(vars))
 	if vars != nil && len(vars) == 3 {
 		var name = vars["name"]
+		h.Log.Debug("name: ", name)
 		var stStr = vars["start"]
 		var edStr = vars["end"]
 		st, sterr := strconv.ParseInt(stStr, 10, 64)
@@ -186,45 +187,57 @@ func (h *MCHandler) GetAdminBlogList(w http.ResponseWriter, r *http.Request) {
 // ActivateBlog ActivateBlog
 func (h *MCHandler) ActivateBlog(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, sterr := strconv.ParseInt(idStr, 10, 64)
-		if sterr == nil {
-			suc := h.DB.ActivateBlog(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var bl db.Blog
+		bs, err := h.processBody(r, &bl)
+		h.Log.Debug("bs: ", bs)
+		h.Log.Debug("err: ", err)
+		if !bs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			br := h.DB.ActivateBlog(bl.ID)
+			var res m.Response
+			res.Success = br
+			h.Log.Debug("br: ", br)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }
 
 // DectivateBlog DectivateBlog
 func (h *MCHandler) DectivateBlog(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, sterr := strconv.ParseInt(idStr, 10, 64)
-		if sterr == nil {
-			suc := h.DB.DeactivateBlog(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var bl db.Blog
+		bs, err := h.processBody(r, &bl)
+		h.Log.Debug("bs: ", bs)
+		h.Log.Debug("err: ", err)
+		if !bs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			br := h.DB.DeactivateBlog(bl.ID)
+			var res m.Response
+			res.Success = br
+			h.Log.Debug("br: ", br)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }

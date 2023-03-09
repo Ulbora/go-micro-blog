@@ -421,32 +421,61 @@ func TestMCHandler_ActivateComment(t *testing.T) {
 	log := l.New()
 	log.SetLogLevel(lg.AllLevel)
 
-	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	aJSON := ioutil.NopCloser(bytes.NewBufferString(`{"id": 4, "blogId": 4, "text":"test", "userId": 5}`))
+
+	r, _ := http.NewRequest("GET", "/ffllist", aJSON)
+	r.Header.Set("Content-Type", "application/json")
 	r.Header.Set("apiAdminKey", "1234")
-	vars := map[string]string{
-		"id": "1",
-	}
-	r = mux.SetURLVars(r, vars)
+	// vars := map[string]string{
+	// 	"id": "1",
+	// }
+	// r = mux.SetURLVars(r, vars)
 
 	w := httptest.NewRecorder()
 
 	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	//r2.Header.Set("Content-Type", "application/json")
 	r2.Header.Set("apiAdminKey", "1234")
-	vars2 := map[string]string{
-		"id": "1w",
-	}
-	r2 = mux.SetURLVars(r2, vars2)
+	// vars2 := map[string]string{
+	// 	"id": "1w",
+	// }
+	// r2 = mux.SetURLVars(r2, vars2)
 
 	w2 := httptest.NewRecorder()
 
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
+	r3.Header.Set("Content-Type", "application/json")
+
 	r3.Header.Set("apiAdminKey", "12343")
-	vars3 := map[string]string{
-		"id": "1",
-	}
-	r3 = mux.SetURLVars(r3, vars3)
+
+	// vars3 := map[string]string{
+	// 	"id": "1",
+	// }
+	//r3 = mux.SetURLVars(r3, vars3)
 
 	w3 := httptest.NewRecorder()
+
+	aJSON4 := ioutil.NopCloser(bytes.NewBufferString(`{"id": 4, "blogId": 4, "text":"test", "userId": 5}`))
+	r4, _ := http.NewRequest("GET", "/ffllist", aJSON4)
+	r4.Header.Set("Content-Type", "application/json")
+	r4.Header.Set("apiAdminKey", "1234")
+	// vars3 := map[string]string{
+	// 	"id": "1",
+	// }
+	// r3 = mux.SetURLVars(r3, vars3)
+
+	w4 := httptest.NewRecorder()
+
+	mdb4 := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb4.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
 
 	type fields struct {
 		DB          db.BlogDB
@@ -511,6 +540,22 @@ func TestMCHandler_ActivateComment(t *testing.T) {
 			args: args{
 				w: w3,
 				r: r3,
+			},
+		},
+		{
+			name: "test 4",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb4,
+					Log: log,
+				},
+				Log:         log,
+				APIAdminKey: "1234",
+				//Manager: mg.New(),
+			},
+			args: args{
+				w: w4,
+				r: r4,
 			},
 		},
 	}
@@ -537,7 +582,6 @@ func TestMCHandler_ActivateComment(t *testing.T) {
 
 func TestMCHandler_DectivateComment(t *testing.T) {
 
-
 	mdb := gdb.MyDBMock{
 		Host:     "localhost:3306",
 		User:     "admin",
@@ -560,35 +604,59 @@ func TestMCHandler_DectivateComment(t *testing.T) {
 	log := l.New()
 	log.SetLogLevel(lg.AllLevel)
 
-	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	aJSON := ioutil.NopCloser(bytes.NewBufferString(`{"id": 4, "blogId": 4, "text":"test", "userId": 5}`))
+
+	r, _ := http.NewRequest("GET", "/ffllist", aJSON)
 	r.Header.Set("apiAdminKey", "1234")
-	vars := map[string]string{
-		"id": "1",
-	}
-	r = mux.SetURLVars(r, vars)
+	r.Header.Set("Content-Type", "application/json")
+	// vars := map[string]string{
+	// 	"id": "1",
+	// }
+	// r = mux.SetURLVars(r, vars)
 
 	w := httptest.NewRecorder()
 
-
-
 	r2, _ := http.NewRequest("GET", "/ffllist", nil)
 	r2.Header.Set("apiAdminKey", "1234")
-	vars2 := map[string]string{
-		"id": "1w",
-	}
-	r2 = mux.SetURLVars(r2, vars2)
+	// vars2 := map[string]string{
+	// 	"id": "1w",
+	// }
+	// r2 = mux.SetURLVars(r2, vars2)
 
 	w2 := httptest.NewRecorder()
 
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
 	r3.Header.Set("apiAdminKey", "12343")
-	vars3 := map[string]string{
-		"id": "1",
-	}
-	r3 = mux.SetURLVars(r3, vars3)
+	r3.Header.Set("Content-Type", "application/json")
+
+	// vars3 := map[string]string{
+	// 	"id": "1",
+	// }
+	// r3 = mux.SetURLVars(r3, vars3)
 
 	w3 := httptest.NewRecorder()
 
+	aJSON4 := ioutil.NopCloser(bytes.NewBufferString(`{"id": 4, "blogId": 4, "text":"test", "userId": 5}`))
+	r4, _ := http.NewRequest("GET", "/ffllist", aJSON4)
+	r4.Header.Set("Content-Type", "application/json")
+	r4.Header.Set("apiAdminKey", "1234")
+	// vars3 := map[string]string{
+	// 	"id": "1",
+	// }
+	// r3 = mux.SetURLVars(r3, vars3)
+
+	w4 := httptest.NewRecorder()
+
+	mdb4 := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb4.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
 
 	type fields struct {
 		DB          db.BlogDB
@@ -655,6 +723,22 @@ func TestMCHandler_DectivateComment(t *testing.T) {
 				r: r3,
 			},
 		},
+		{
+			name: "test 4",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb4,
+					Log: log,
+				},
+				Log:         log,
+				APIAdminKey: "1234",
+				//Manager: mg.New(),
+			},
+			args: args{
+				w: w4,
+				r: r4,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -666,8 +750,6 @@ func TestMCHandler_DectivateComment(t *testing.T) {
 				APIAdminKey: tt.fields.APIAdminKey,
 			}
 			h.DectivateComment(tt.args.w, tt.args.r)
-
-
 
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)

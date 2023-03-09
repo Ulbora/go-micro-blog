@@ -52,7 +52,7 @@ const (
 
 	selectBlogByName = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
-		" order by name " +
+		// " order by name " +
 		" where name like ? LIMIT ?, ?  "
 
 	selectBlogList = " SELECT id, name, content, user_id, active, entered, updated " +

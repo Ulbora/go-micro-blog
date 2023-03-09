@@ -114,45 +114,57 @@ func (h *MCHandler) GetCommentList(w http.ResponseWriter, r *http.Request) {
 // ActivateComment ActivateComment
 func (h *MCHandler) ActivateComment(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, sterr := strconv.ParseInt(idStr, 10, 64)
-		if sterr == nil {
-			suc := h.DB.ActivateComment(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var cm db.Comment
+		cms, err := h.processBody(r, &cm)
+		h.Log.Debug("bs: ", cms)
+		h.Log.Debug("err: ", err)
+		if !cms || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			cr := h.DB.ActivateComment(cm.ID)
+			h.Log.Debug("cr: ", cr)
+			var res m.Response
+			res.Success = cr
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }
 
 // DectivateComment DectivateComment
 func (h *MCHandler) DectivateComment(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	vars := mux.Vars(r)
-	h.Log.Debug("vars: ", len(vars))
-	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
-		var idStr = vars["id"]
-		id, iderr := strconv.ParseInt(idStr, 10, 64)
-		if iderr == nil {
-			suc := h.DB.DeactivateComment(id)
-			var res m.Response
-			res.Success = suc
-			w.WriteHeader(http.StatusOK)
-			resJSON, _ := json.Marshal(res)
-			fmt.Fprint(w, string(resJSON))
-		} else {
-			w.WriteHeader(http.StatusBadRequest)
-		}
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		w.WriteHeader(http.StatusBadRequest)
+		var cm db.Comment
+		cms, err := h.processBody(r, &cm)
+		h.Log.Debug("bs: ", cms)
+		h.Log.Debug("err: ", err)
+		if !cms || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			cr := h.DB.DeactivateBlog(cm.ID)
+			h.Log.Debug("cr: ", cr)
+			var res m.Response
+			res.Success = cr
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 }
