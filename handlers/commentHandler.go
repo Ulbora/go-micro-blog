@@ -111,6 +111,32 @@ func (h *MCHandler) GetCommentList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetCommentAdminList GetCommentList
+func (h *MCHandler) GetCommentAdminList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 3 && h.processAPIAdminKey(r) {
+		var bidStr = vars["bid"]
+		var stStr = vars["start"]
+		var edStr = vars["end"]
+		bid, berr := strconv.ParseInt(bidStr, 10, 64)
+		st, sterr := strconv.ParseInt(stStr, 10, 64)
+		ed, ederr := strconv.ParseInt(edStr, 10, 64)
+
+		if berr == nil && sterr == nil && ederr == nil {
+			clg := h.DB.GetCommentList(bid, st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(clg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 // ActivateComment ActivateComment
 func (h *MCHandler) ActivateComment(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
@@ -120,6 +146,7 @@ func (h *MCHandler) ActivateComment(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var cm db.Comment
 		cms, err := h.processBody(r, &cm)
+		h.Log.Debug("cm: ", cm)
 		h.Log.Debug("bs: ", cms)
 		h.Log.Debug("err: ", err)
 		if !cms || err != nil || !h.processAPIAdminKey(r) {
@@ -154,7 +181,7 @@ func (h *MCHandler) DectivateComment(w http.ResponseWriter, r *http.Request) {
 		if !cms || err != nil || !h.processAPIAdminKey(r) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
-			cr := h.DB.DeactivateBlog(cm.ID)
+			cr := h.DB.DeactivateComment(cm.ID)
 			h.Log.Debug("cr: ", cr)
 			var res m.Response
 			res.Success = cr

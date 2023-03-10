@@ -29,7 +29,7 @@ func (m *SysManager) AddComment(c *db.Comment) *ResponseID {
 	var rtn ResponseID
 	if c != nil {
 		us := m.DB.GetUserByID(c.UserID)
-		if us == nil || us.Active {
+		if us.Active {
 			b := m.DB.GetBlog(c.BlogID)
 			if b.Active {
 				c.Active = m.allowAutoComment
@@ -49,8 +49,10 @@ func (m *SysManager) UpdateComment(c *db.Comment) *Response {
 	var rtn Response
 	if c != nil {
 		us := m.DB.GetUserByID(c.UserID)
-		if us == nil || us.Active {
+		m.Log.Debug("us: ", *us)
+		if us.Active {
 			b := m.DB.GetBlog(c.BlogID)
+			m.Log.Debug("b: ", *b)
 			if b.Active {
 				suc := m.DB.UpdateComment(c)
 				if suc {

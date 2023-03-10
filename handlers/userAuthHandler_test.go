@@ -69,6 +69,10 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -82,6 +86,10 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -94,6 +102,10 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -106,6 +118,10 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -118,6 +134,10 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len:  0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -134,7 +154,7 @@ func TestMCHandler_AddUserAuth(t *testing.T) {
 			var res m.ResponseID
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})
@@ -156,7 +176,7 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 
 	mdb.MockRows1 = &gdb.DbRows{
 		Rows: [][]string{{"1", "linkedin", "4", "2023-03-01 00:01:14"},
-			{"2","linkedin", "4", "2023-03-01 00:01:14"}},
+			{"2", "linkedin", "4", "2023-03-01 00:01:14"}},
 	}
 
 	var l lg.Logger
@@ -166,7 +186,7 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/ffllist", nil)
 	r.Header.Set("apiAdminKey", "1234")
 	vars := map[string]string{
-		"uid": "4",
+		"uid":   "4",
 		"start": "1",
 		"end":   "5",
 	}
@@ -174,12 +194,10 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-
-
 	r2, _ := http.NewRequest("GET", "/ffllist", nil)
 	r2.Header.Set("apiAdminKey", "12343")
 	vars2 := map[string]string{
-		"uid": "4",
+		"uid":   "4",
 		"start": "1",
 		"end":   "5",
 	}
@@ -187,21 +205,16 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 
 	w2 := httptest.NewRecorder()
 
-
-
-
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
 	r3.Header.Set("apiAdminKey", "1234")
 	vars3 := map[string]string{
-		"uid": "4g",
+		"uid":   "4g",
 		"start": "1",
 		"end":   "5",
 	}
 	r3 = mux.SetURLVars(r3, vars3)
 
 	w3 := httptest.NewRecorder()
-
-
 
 	type fields struct {
 		DB          db.BlogDB
@@ -218,6 +231,10 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -227,14 +244,18 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:     log,
+				Log: log,
 				//Manager: mg.New(),
-				APIAdminKey:  "1234",
+				APIAdminKey: "1234",
 			},
 			args: args{
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -243,14 +264,18 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:     log,
+				Log: log,
 				//Manager: mg.New(),
-				APIAdminKey:  "1234",
+				APIAdminKey: "1234",
 			},
 			args: args{
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -259,14 +284,18 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:     log,
+				Log: log,
 				//Manager: mg.New(),
-				APIAdminKey:  "1234",
+				APIAdminKey: "1234",
 			},
 			args: args{
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 	}
 	for _, tt := range tests {
@@ -280,11 +309,10 @@ func TestMCHandler_GetUserAuthList(t *testing.T) {
 			}
 			h.GetUserAuthList(tt.args.w, tt.args.r)
 
-
 			var res []db.UserAuth
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if tt.ww.Code != tt.code || len(res) != tt.len {
 				t.Fail()
 			}
 		})

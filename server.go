@@ -109,6 +109,13 @@ func main() {
 	bh.APIAdminKey = apiAdminKey
 
 	router := mux.NewRouter()
+	//CORS turned off for now, may turn on later if needed
+	// router.EnableCORS()
+	router.CORSAllowCredentials()
+	router.SetCorsAllowedHeaders("X-Requested-With, Content-Type, apiKey, apiAdminKey, Origin")
+	router.SetCorsAllowedOrigins("*")
+	router.SetCorsAllowedMethods("GET, DELETE, POST, PUT")
+
 	port := "3000"
 	envPort := os.Getenv("PORT")
 	if envPort != "" {
@@ -128,6 +135,13 @@ func main() {
 	router.HandleFunc("/rs/blog/admin/list/{start}/{end}", h.GetAdminBlogList).Methods("GET")
 	router.HandleFunc("/rs/blog/activate", h.ActivateBlog).Methods("PUT")
 	router.HandleFunc("/rs/blog/deactivate", h.DectivateBlog).Methods("PUT")
+
+	router.HandleFunc("/rs/comment/add", h.AddComment).Methods("POST")
+	router.HandleFunc("/rs/comment/update", h.UpdateComment).Methods("PUT")
+	router.HandleFunc("/rs/comment/list/{bid}/{start}/{end}", h.GetCommentList).Methods("GET")
+	router.HandleFunc("/rs/comment/admin/list/{bid}/{start}/{end}", h.GetCommentAdminList).Methods("GET")
+	router.HandleFunc("/rs/comment/activate", h.ActivateComment).Methods("PUT")
+	router.HandleFunc("/rs/comment/deactivate", h.DectivateComment).Methods("PUT")
 
 	//router.HandleFunc("/rs/loglevel", h.SetLogLevel).Methods("POST")
 

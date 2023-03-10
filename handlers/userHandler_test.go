@@ -69,6 +69,10 @@ func TestMCHandler_AddUser(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -82,6 +86,10 @@ func TestMCHandler_AddUser(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -94,6 +102,10 @@ func TestMCHandler_AddUser(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 2",
@@ -106,6 +118,10 @@ func TestMCHandler_AddUser(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 		{
 			name: "test 2",
@@ -118,6 +134,10 @@ func TestMCHandler_AddUser(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len: 0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -134,7 +154,7 @@ func TestMCHandler_AddUser(t *testing.T) {
 			var res m.ResponseID
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 		})
@@ -194,6 +214,10 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -207,6 +231,10 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -219,6 +247,10 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -231,9 +263,13 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 		{
-			name: "test 3",
+			name: "test 4",
 			fields: fields{
 				Log:     log,
 				Manager: mg4.New(),
@@ -243,6 +279,10 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len: 0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -259,7 +299,7 @@ func TestMCHandler_UpdateUser(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 
@@ -318,6 +358,11 @@ func TestMCHandler_GetUser(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ID int64
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -334,6 +379,10 @@ func TestMCHandler_GetUser(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			ID: 1,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -349,6 +398,10 @@ func TestMCHandler_GetUser(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			ID: 0,
+			ww:   w2,
 		},
 	}
 	for _, tt := range tests {
@@ -365,7 +418,7 @@ func TestMCHandler_GetUser(t *testing.T) {
 			var res db.User
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || res.ID != 1) {
+			if  (tt.ww.Code != tt.code || res.ID != tt.ID) {
 				t.Fail()
 			}
 
@@ -430,6 +483,10 @@ func TestMCHandler_GetUserList(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -447,6 +504,10 @@ func TestMCHandler_GetUserList(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -463,6 +524,10 @@ func TestMCHandler_GetUserList(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 	}
 	for _, tt := range tests {
@@ -479,7 +544,7 @@ func TestMCHandler_GetUserList(t *testing.T) {
 			var res []db.User
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if (tt.ww.Code != tt.code || len(res) != tt.len) {
 				t.Fail()
 			}
 
@@ -576,6 +641,10 @@ func TestMCHandler_EnableUser(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -593,6 +662,10 @@ func TestMCHandler_EnableUser(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -609,6 +682,10 @@ func TestMCHandler_EnableUser(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -625,6 +702,10 @@ func TestMCHandler_EnableUser(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -641,6 +722,10 @@ func TestMCHandler_EnableUser(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len: 0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -657,7 +742,7 @@ func TestMCHandler_EnableUser(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 		})
@@ -753,6 +838,10 @@ func TestMCHandler_DisableUser(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -770,6 +859,10 @@ func TestMCHandler_DisableUser(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -786,6 +879,10 @@ func TestMCHandler_DisableUser(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -802,6 +899,10 @@ func TestMCHandler_DisableUser(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -818,6 +919,10 @@ func TestMCHandler_DisableUser(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len: 0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -834,7 +939,7 @@ func TestMCHandler_DisableUser(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 		})

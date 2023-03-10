@@ -143,6 +143,7 @@ func TestSysManager_UpdateComment(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
+				Log: log,
 			},
 			args: args{
 				c: &db.Comment{

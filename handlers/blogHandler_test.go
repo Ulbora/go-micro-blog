@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -70,6 +71,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -83,6 +87,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -95,6 +102,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -107,6 +117,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -119,6 +132,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -135,7 +151,9 @@ func TestMCHandler_AddBlog(t *testing.T) {
 			var res m.ResponseID
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+
+			fmt.Println("code: ", tt.ww.Code)
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})
@@ -195,6 +213,9 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -208,6 +229,9 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -220,6 +244,9 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -232,6 +259,9 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -244,6 +274,9 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -260,7 +293,8 @@ func TestMCHandler_UpdateBlog(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})
@@ -339,6 +373,10 @@ func TestMCHandler_GetBlog(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		id     int64
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -354,6 +392,10 @@ func TestMCHandler_GetBlog(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			id:   1,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -368,6 +410,10 @@ func TestMCHandler_GetBlog(t *testing.T) {
 				w: w2,
 				r: r,
 			},
+			code: 400,
+			suc:  false,
+			id:   0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -382,6 +428,10 @@ func TestMCHandler_GetBlog(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			id:   0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -396,6 +446,10 @@ func TestMCHandler_GetBlog(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 400,
+			suc:  false,
+			id:   0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -412,7 +466,7 @@ func TestMCHandler_GetBlog(t *testing.T) {
 			var res db.Blog
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || res.ID != 1) {
+			if tt.ww.Code != tt.code || res.ID != tt.id {
 				t.Fail()
 			}
 
@@ -484,6 +538,10 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -500,6 +558,10 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -515,6 +577,10 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -530,6 +596,10 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 	}
 	for _, tt := range tests {
@@ -546,7 +616,7 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 			var res []db.Blog
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if tt.ww.Code != tt.code || len(res) != tt.len {
 				t.Fail()
 			}
 
@@ -615,6 +685,10 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -631,6 +705,10 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -646,6 +724,10 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -661,6 +743,10 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 	}
 	for _, tt := range tests {
@@ -677,7 +763,7 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 			var res []db.Blog
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if tt.ww.Code != tt.code || len(res) != tt.len {
 				t.Fail()
 			}
 		})
@@ -716,6 +802,16 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
+	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	r2.Header.Set("apiAdminKey", "12348")
+	vars2 := map[string]string{
+		"start": "1",
+		"end":   "5",
+	}
+	r2 = mux.SetURLVars(r2, vars2)
+
+	w2 := httptest.NewRecorder()
+
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
 	r3.Header.Set("apiAdminKey", "1234")
 	vars3 := map[string]string{
@@ -741,6 +837,10 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -758,6 +858,10 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -767,13 +871,17 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 					Log: log,
 				},
 				Log:         log,
-				APIAdminKey: "12343",
+				APIAdminKey: "1234",
 				//Manager: mg.New(),
 			},
 			args: args{
-				w: w,
-				r: r,
+				w: w2,
+				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -790,6 +898,10 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 	}
 	for _, tt := range tests {
@@ -806,7 +918,7 @@ func TestMCHandler_GetAdminBlogList(t *testing.T) {
 			var res []db.Blog
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if tt.ww.Code != tt.code || len(res) != tt.len {
 				t.Fail()
 			}
 
@@ -906,6 +1018,10 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -923,6 +1039,10 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -939,6 +1059,10 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -955,6 +1079,10 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 415,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -971,6 +1099,10 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len:  0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -988,7 +1120,7 @@ func TestMCHandler_ActivateBlog(t *testing.T) {
 		var res m.Response
 		body, _ := ioutil.ReadAll(w.Result().Body)
 		json.Unmarshal(body, &res)
-		if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+		if tt.ww.Code != tt.code || res.Success != tt.suc {
 			t.Fail()
 		}
 
@@ -1088,6 +1220,10 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -1105,6 +1241,10 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len:  0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -1121,6 +1261,10 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len:  0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -1137,6 +1281,10 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -1153,6 +1301,10 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len:  0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -1169,7 +1321,7 @@ func TestMCHandler_DectivateBlog(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})

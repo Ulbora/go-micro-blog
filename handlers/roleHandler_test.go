@@ -69,6 +69,10 @@ func TestMCHandler_AddRole(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -82,6 +86,10 @@ func TestMCHandler_AddRole(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -94,6 +102,10 @@ func TestMCHandler_AddRole(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 415,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -106,6 +118,10 @@ func TestMCHandler_AddRole(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 		{
 			name: "test 4",
@@ -118,6 +134,10 @@ func TestMCHandler_AddRole(t *testing.T) {
 				w: w4,
 				r: r4,
 			},
+			code: 500,
+			suc:  false,
+			len: 0,
+			ww:   w4,
 		},
 	}
 	for _, tt := range tests {
@@ -134,7 +154,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			var res m.ResponseID
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 		})
@@ -192,6 +212,10 @@ func TestMCHandler_GetRole(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		id int64
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -208,6 +232,10 @@ func TestMCHandler_GetRole(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			id: 1,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -222,6 +250,10 @@ func TestMCHandler_GetRole(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			id: 0,
+			ww:   w2,
 		},
 	}
 	for _, tt := range tests {
@@ -238,7 +270,7 @@ func TestMCHandler_GetRole(t *testing.T) {
 			var res db.Role
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || res.ID != 1) {
+			if  (tt.ww.Code != tt.code || res.ID != tt.id) {
 				t.Fail()
 			}
 		})
@@ -297,6 +329,10 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -313,6 +349,10 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 2,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -328,6 +368,10 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 	}
 	for _, tt := range tests {
@@ -344,7 +388,7 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 			var res []db.Role
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || len(res) != 2) {
+			if  (tt.ww.Code != tt.code || len(res) != tt.len) {
 				t.Fail()
 			}
 		})
@@ -426,6 +470,10 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 		name   string
 		fields fields
 		args   args
+		code   int
+		suc    bool
+		len int
+		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
 		{
@@ -442,6 +490,10 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 				w: w,
 				r: r,
 			},
+			code: 200,
+			suc:  true,
+			len: 0,
+			ww:   w,
 		},
 		{
 			name: "test 2",
@@ -457,6 +509,10 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 				w: w2,
 				r: r2,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w2,
 		},
 		{
 			name: "test 3",
@@ -472,6 +528,10 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 				w: w3,
 				r: r3,
 			},
+			code: 400,
+			suc:  false,
+			len: 0,
+			ww:   w3,
 		},
 	}
 	for _, tt := range tests {
@@ -490,7 +550,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if tt.name == "test 1" && (w.Code != 200 || !res.Success) {
+			if (tt.ww.Code != tt.code || res.Success != tt.suc) {
 				t.Fail()
 			}
 		})

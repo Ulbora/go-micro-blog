@@ -22,7 +22,7 @@ import "net/http"
 
 */
 
-const(
+const (
 	parseBodyErr = "Failed to process body"
 )
 
@@ -56,6 +56,7 @@ type Handler interface {
 	AddComment(w http.ResponseWriter, r *http.Request)
 	UpdateComment(w http.ResponseWriter, r *http.Request)
 	GetCommentList(w http.ResponseWriter, r *http.Request)
+	GetCommentAdminList(w http.ResponseWriter, r *http.Request)
 	ActivateComment(w http.ResponseWriter, r *http.Request)
 	DectivateComment(w http.ResponseWriter, r *http.Request)
 

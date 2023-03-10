@@ -302,6 +302,8 @@ func TestMCHandler_ProcessBody(t *testing.T) {
 		args    args
 		want    bool
 		wantErr bool
+		objID int64
+		objName string
 	}{
 		// TODO: Add test cases.
 		{
@@ -315,6 +317,8 @@ func TestMCHandler_ProcessBody(t *testing.T) {
 			},
 			want:    true,
 			wantErr: false,
+			objID: 1,
+			objName: "test",
 		},
 		{
 			name: "test 2",
@@ -327,6 +331,8 @@ func TestMCHandler_ProcessBody(t *testing.T) {
 			},
 			want:    false,
 			wantErr: true,
+			objID: 0,
+			objName: "",
 		},
 		{
 			name: "test 3",
@@ -339,6 +345,8 @@ func TestMCHandler_ProcessBody(t *testing.T) {
 			},
 			want:    false,
 			wantErr: true,
+			objID: 0,
+			objName: "",
 		},
 	}
 	for _, tt := range tests {
@@ -359,7 +367,7 @@ func TestMCHandler_ProcessBody(t *testing.T) {
 			if got != tt.want {
 				t.Errorf("MCHandler.ProcessBody() = %v, want %v", got, tt.want)
 			}
-			if tt.name == "test 1" && (tt.args.obj.(*testObj).ID != 1 || tt.args.obj.(*testObj).Name != "test"){
+			if got && (tt.args.obj.(*testObj).ID != tt.objID || tt.args.obj.(*testObj).Name != tt.objName){
 				t.Fail()
 			}
 		})
