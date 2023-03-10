@@ -33,7 +33,7 @@ func (d *MyBlogDB) AddConfig(c *Config) (bool, int64) {
 	}
 	if c != nil {
 		var a []any
-		a = append(a, c.AllowAutoComment, c.AllowAutoPost)
+		a = append(a, c.AllowAutoPost, c.AllowAutoComment)
 		suc, id = d.DB.Insert(insertConfig, a...)
 		d.Log.Debug("suc in add config", suc)
 		d.Log.Debug("id in add config", id)
@@ -49,7 +49,7 @@ func (d *MyBlogDB) UpdateConfig(c *Config) bool {
 	}
 	if c != nil {
 		var a []any
-		a = append(a, c.AllowAutoComment, c.AllowAutoPost, c.ID)
+		a = append(a, c.AllowAutoPost, c.AllowAutoComment, c.ID)
 		suc = d.DB.Update(updateConfig, a...)
 		d.Log.Debug("suc in update config", suc)
 	}

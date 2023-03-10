@@ -143,6 +143,28 @@ func main() {
 	router.HandleFunc("/rs/comment/activate", h.ActivateComment).Methods("PUT")
 	router.HandleFunc("/rs/comment/deactivate", h.DectivateComment).Methods("PUT")
 
+	router.HandleFunc("/rs/user/add", h.AddUser).Methods("POST")
+	router.HandleFunc("/rs/user/update", h.UpdateUser).Methods("PUT")
+	router.HandleFunc("/rs/user/get/{email}", h.GetUser).Methods("GET")
+	router.HandleFunc("/rs/user/list", h.GetUserList).Methods("GET")
+	router.HandleFunc("/rs/user/enable", h.EnableUser).Methods("PUT")
+	router.HandleFunc("/rs/user/disable", h.DisableUser).Methods("PUT")
+
+	router.HandleFunc("/rs/role/add", h.AddRole).Methods("POST")
+	router.HandleFunc("/rs/role/get/{name}", h.GetRole).Methods("GET")
+	router.HandleFunc("/rs/role/list", h.GetRoleList).Methods("GET")
+	router.HandleFunc("/rs/role/delete/{id}", h.DeleteRole).Methods("DELETE")
+
+	router.HandleFunc("/rs/like/add", h.AddLike).Methods("POST")
+	router.HandleFunc("/rs/like/view/{bid}", h.ViewLikes).Methods("GET")
+	router.HandleFunc("/rs/like/remove/{bid}/{uid}", h.RemoveLike).Methods("DELETE")
+
+	router.HandleFunc("/rs/user/auth/add", h.AddUserAuth).Methods("POST")
+	router.HandleFunc("/rs/user/auth/list/{uid}/{start}/{end}", h.GetUserAuthList).Methods("GET")
+
+	router.HandleFunc("/rs/config/update", h.UpdateConfig).Methods("PUT")
+	router.HandleFunc("/rs/config/get", h.GetConfig).Methods("GET")
+
 	//router.HandleFunc("/rs/loglevel", h.SetLogLevel).Methods("POST")
 
 	fmt.Println("Micor-Blog server is running on port " + port + "!")
