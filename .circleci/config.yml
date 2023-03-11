@@ -17,6 +17,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
+      - sonarcloud/scan
       - setup_remote_docker
       - run:
           name: Build Docker image
@@ -51,7 +52,8 @@ jobs:
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
             # echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
-
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.1.0
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -59,3 +61,6 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build
+      - publish-latest:
+          requires:
+            - build
