@@ -41,7 +41,7 @@ jobs:
           path: /tmp/test-reports
   publish-latest:
     environment:
-      IMAGE_NAME: building-on-ci
+      IMAGE_NAME:ulboralabs/go-micro-blog
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -51,7 +51,7 @@ jobs:
           command: |
             docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
             # echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push ulboralabs/go-micro-blog:latest
+            docker push $IMAGE_NAME:latest
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.1.0
 # Invoke jobs via workflows
