@@ -145,18 +145,18 @@ func (h *MCHandler) EnableUser(w http.ResponseWriter, r *http.Request) {
 // DisableUser DisableUser
 func (h *MCHandler) DisableUser(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	bcOk := h.checkContent(r)
-	if !bcOk {
+	ducOk := h.checkContent(r)
+	if !ducOk {
 		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		var ubl db.User
-		ubs, err := h.processBody(r, &ubl)
-		h.Log.Debug("bs: ", ubs)
+		var udl db.User
+		uds, err := h.processBody(r, &udl)
+		h.Log.Debug("bs: ", uds)
 		h.Log.Debug("err: ", err)
-		if !ubs || err != nil || !h.processAPIAdminKey(r) {
+		if !uds || err != nil || !h.processAPIAdminKey(r) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
-			ur := h.DB.DisableUser(ubl.ID)
+			ur := h.DB.DisableUser(udl.ID)
 			var res m.Response
 			res.Success = ur
 			h.Log.Debug("br: ", ur)

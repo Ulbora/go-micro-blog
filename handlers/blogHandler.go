@@ -216,18 +216,18 @@ func (h *MCHandler) ActivateBlog(w http.ResponseWriter, r *http.Request) {
 // DectivateBlog DectivateBlog
 func (h *MCHandler) DectivateBlog(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	bcOk := h.checkContent(r)
-	if !bcOk {
+	dbcOk := h.checkContent(r)
+	if !dbcOk {
 		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		var bl db.Blog
-		bs, err := h.processBody(r, &bl)
-		h.Log.Debug("bs: ", bs)
+		var dbl db.Blog
+		dbs, err := h.processBody(r, &dbl)
+		h.Log.Debug("dbs: ", dbs)
 		h.Log.Debug("err: ", err)
-		if !bs || err != nil || !h.processAPIAdminKey(r) {
+		if !dbs || err != nil || !h.processAPIAdminKey(r) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
-			br := h.DB.DeactivateBlog(bl.ID)
+			br := h.DB.DeactivateBlog(dbl.ID)
 			var res m.Response
 			res.Success = br
 			h.Log.Debug("br: ", br)
