@@ -4,11 +4,18 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  build:
+executors:
+  docker-publisher:
     environment:
       IMAGE_NAME: ulboralabs/go-micro-blog
-    working_directory: ~/repo
+    docker:
+      - image: circleci/buildpack-deps:stretch
+jobs:
+  build:
+    executor: docker-publisher
+    # environment:
+    #   IMAGE_NAME: ulboralabs/go-micro-blog
+    # working_directory: ~/repo
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -19,9 +26,9 @@ jobs:
       - checkout
       - sonarcloud/scan
       - setup_remote_docker
-      - run:
-          name: $IMAGE_NAME
-          command: docker build -t $IMAGE_NAME:latest .
+      # - run:
+      #     name: $IMAGE_NAME
+      #     command: docker build -t $IMAGE_NAME:latest .
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
@@ -39,13 +46,30 @@ jobs:
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
       - store_test_results:
           path: /tmp/test-reports
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
   publish-latest:
-    environment:
-      IMAGE_NAME: ulboralabs/go-micro-blog
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    # environment:
+    #   IMAGE_NAME: ulboralabs/go-micro-blog
+    executor: docker-publisher
+    # docker:
+    #   - image: circleci/buildpack-deps:stretch
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
@@ -57,6 +81,7 @@ orbs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
+  version: 2
   Build: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
