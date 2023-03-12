@@ -13,9 +13,6 @@ executors:
 jobs:
   build:
     executor: docker-publisher
-    # environment:
-    #   IMAGE_NAME: ulboralabs/go-micro-blog
-    # working_directory: ~/repo
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -26,9 +23,7 @@ jobs:
       - checkout
       - sonarcloud/scan
       - setup_remote_docker
-      # - run:
-      #     name: $IMAGE_NAME
-      #     command: docker build -t $IMAGE_NAME:latest .
+
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
@@ -58,11 +53,7 @@ jobs:
           paths:
             - ./image.tar
   publish-latest:
-    # environment:
-    #   IMAGE_NAME: ulboralabs/go-micro-blog
     executor: docker-publisher
-    # docker:
-    #   - image: circleci/buildpack-deps:stretch
     steps:
       - attach_workspace:
           at: /tmp/workspace
