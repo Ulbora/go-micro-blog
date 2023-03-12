@@ -20,7 +20,7 @@ jobs:
       - sonarcloud/scan
       - setup_remote_docker
       - run:
-          name: Build Docker image
+          name: $IMAGE_NAME
           command: docker build -t $IMAGE_NAME:latest .
       - restore_cache:
           keys:
@@ -41,7 +41,7 @@ jobs:
           path: /tmp/test-reports
   publish-latest:
     environment:
-      IMAGE_NAME:ulboralabs/go-micro-blog
+      IMAGE_NAME: go-micro-blog
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -49,10 +49,9 @@ jobs:
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
-            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-            docker build -t ulboralabs/go-micro-blog .
+            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"            
             # echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push ulboralabs/go-micro-blog:latest
+            docker push $IMAGE_NAME:latest
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.1.0
 # Invoke jobs via workflows
