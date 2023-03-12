@@ -64,8 +64,8 @@ jobs:
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
-            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"            
-            # echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            # docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"            
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.1.0
