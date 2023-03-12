@@ -41,7 +41,7 @@ jobs:
           path: /tmp/test-reports
   publish-latest:
     environment:
-      IMAGE_NAME: go-micro-blog
+      IMAGE_NAME: ulboralabs/go-micro-blog
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
