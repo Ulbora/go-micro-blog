@@ -6,6 +6,6 @@ require github.com/GolangToolKits/go-mysql v1.0.4
 
 require (
 	github.com/GolangToolKits/go-level-logger v1.0.0
-	github.com/GolangToolKits/grrt v1.0.0
+	github.com/GolangToolKits/grrt v1.0.4
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 )
