@@ -200,18 +200,18 @@ func (h *MCHandler) DisableUser(w http.ResponseWriter, r *http.Request) {
 // DisableUserForCause DisableUserForCause
 func (h *MCHandler) DisableUserForCause(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	ducOk := h.checkContent(r)
-	if !ducOk {
+	duccOk := h.checkContent(r)
+	if !duccOk {
 		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		var udl db.User
-		uds, err := h.processBody(r, &udl)
+		var ucdl db.User
+		uds, err := h.processBody(r, &ucdl)
 		h.Log.Debug("bs: ", uds)
 		h.Log.Debug("err: ", err)
 		if !uds || err != nil || !h.processAPIAdminKey(r) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
-			ur := h.DB.DisableUserForCause(udl.ID)
+			ur := h.DB.DisableUserForCause(ucdl.ID)
 			var res m.Response
 			res.Success = ur
 			h.Log.Debug("br: ", ur)
@@ -229,18 +229,18 @@ func (h *MCHandler) DisableUserForCause(w http.ResponseWriter, r *http.Request) 
 // ReinstateBannedUser ReinstateBannedUser
 func (h *MCHandler) ReinstateBannedUser(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
-	bcOk := h.checkContent(r)
-	if !bcOk {
+	rbcOk := h.checkContent(r)
+	if !rbcOk {
 		http.Error(w, "json required", http.StatusUnsupportedMediaType)
 	} else {
-		var ubl db.User
-		ubs, err := h.processBody(r, &ubl)
+		var rubl db.User
+		ubs, err := h.processBody(r, &rubl)
 		h.Log.Debug("bs: ", ubs)
 		h.Log.Debug("err: ", err)
 		if !ubs || err != nil || !h.processAPIAdminKey(r) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
-			ur := h.DB.ReinstateBannedUser(ubl.ID)
+			ur := h.DB.ReinstateBannedUser(rubl.ID)
 			var res m.Response
 			res.Success = ur
 			h.Log.Debug("br: ", ur)
