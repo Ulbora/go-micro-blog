@@ -24,7 +24,7 @@ func TestSysManager_AddComment(t *testing.T) {
 
 	mdb.MockRow1 = &gdb.DbRow{
 		//Row: []string{"0"},
-		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1"},
+		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1", "0"},
 	}
 
 	mdb.MockRow2 = &gdb.DbRow{
@@ -106,7 +106,7 @@ func TestSysManager_UpdateComment(t *testing.T) {
 
 	mdb.MockRow1 = &gdb.DbRow{
 		//Row: []string{"0"},
-		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1"},
+		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1", "0"},
 	}
 
 	mdb.MockRow2 = &gdb.DbRow{

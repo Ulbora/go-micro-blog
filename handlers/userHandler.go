@@ -113,6 +113,32 @@ func (h *MCHandler) GetUserList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetUnactivatedUserList GetUnactivatedUserList
+func (h *MCHandler) GetUnactivatedUserList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	if h.processAPIAdminKey(r) {
+		blg := h.DB.GetUnactivatedUserList()
+		w.WriteHeader(http.StatusOK)
+		resJSON, _ := json.Marshal(blg)
+		fmt.Fprint(w, string(resJSON))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+// GetBannedUserList GetBannedUserList
+func (h *MCHandler) GetBannedUserList(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	if h.processAPIAdminKey(r) {
+		blg := h.DB.GetBannedUserList()
+		w.WriteHeader(http.StatusOK)
+		resJSON, _ := json.Marshal(blg)
+		fmt.Fprint(w, string(resJSON))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 // EnableUser EnableUser
 func (h *MCHandler) EnableUser(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)
@@ -157,6 +183,64 @@ func (h *MCHandler) DisableUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, parseBodyErr, http.StatusBadRequest)
 		} else {
 			ur := h.DB.DisableUser(udl.ID)
+			var res m.Response
+			res.Success = ur
+			h.Log.Debug("br: ", ur)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
+}
+
+// DisableUserForCause DisableUserForCause
+func (h *MCHandler) DisableUserForCause(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	ducOk := h.checkContent(r)
+	if !ducOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var udl db.User
+		uds, err := h.processBody(r, &udl)
+		h.Log.Debug("bs: ", uds)
+		h.Log.Debug("err: ", err)
+		if !uds || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			ur := h.DB.DisableUserForCause(udl.ID)
+			var res m.Response
+			res.Success = ur
+			h.Log.Debug("br: ", ur)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
+}
+
+// ReinstateBannedUser ReinstateBannedUser
+func (h *MCHandler) ReinstateBannedUser(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	bcOk := h.checkContent(r)
+	if !bcOk {
+		http.Error(w, "json required", http.StatusUnsupportedMediaType)
+	} else {
+		var ubl db.User
+		ubs, err := h.processBody(r, &ubl)
+		h.Log.Debug("bs: ", ubs)
+		h.Log.Debug("err: ", err)
+		if !ubs || err != nil || !h.processAPIAdminKey(r) {
+			http.Error(w, parseBodyErr, http.StatusBadRequest)
+		} else {
+			ur := h.DB.ReinstateBannedUser(ubl.ID)
 			var res m.Response
 			res.Success = ur
 			h.Log.Debug("br: ", ur)

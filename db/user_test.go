@@ -213,7 +213,7 @@ func TestMyBlogDB_GetUser(t *testing.T) {
 		Row: []string{},
 	}
 	db.MockRow1 = &gdb.DbRow{
-		Row: []string{"1", "test@test.com", "testfff", "tester", fileStr, "2", "0"},
+		Row: []string{"1", "test@test.com", "testfff", "tester", fileStr, "2", "0", "0"},
 	}
 
 	var l lg.Logger
@@ -290,8 +290,8 @@ func TestMyBlogDB_GetUserList(t *testing.T) {
 	//r1:= []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"}
 
 	db.MockRows1 = &gdb.DbRows{
-		Rows: [][]string{{"1", "test@test.com", "testfff", "tester", "", "2", "0"},
-			{"2", "test2@test.com", "test", "tester", "", "2", "1"}},
+		Rows: [][]string{{"1", "test@test.com", "testfff", "tester", "", "2", "0", "0"},
+			{"2", "test2@test.com", "test", "tester", "", "2", "1", "0"}},
 	}
 	// db.MockRow1 = &gdb.DbRow{
 	// 	Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"},
@@ -332,6 +332,142 @@ func TestMyBlogDB_GetUserList(t *testing.T) {
 			}
 			if len(*got) > 1 && (*got)[1].Email != "test2@test.com" {
 				t.Errorf("MyBlogDB.GetUserList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMyBlogDB_GetUnactivatedUserList(t *testing.T) {
+
+	// db := gdb.MyDB{
+	// 	Host:     "localhost:3306",
+	// 	User:     "admin",
+	// 	Password: "admin",
+	// 	Database: "go_micro_blog",
+	// }
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	//r1:= []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"}
+
+	db.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "test@test.com", "testfff", "tester", "", "2", "0", "0"},
+			{"2", "test2@test.com", "test", "tester", "", "2", "1", "0"}},
+	}
+
+	// db.MockRow1 = &gdb.DbRow{
+	// 	Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"},
+	// }
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    *[]User
+		wantLen int
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			wantLen: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.GetUnactivatedUserList(); len(*got) != tt.wantLen {
+				t.Errorf("MyBlogDB.GetUnactivatedUserList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMyBlogDB_GetBannedUserList(t *testing.T) {
+
+	// db := gdb.MyDB{
+	// 	Host:     "localhost:3306",
+	// 	User:     "admin",
+	// 	Password: "admin",
+	// 	Database: "go_micro_blog",
+	// }
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	//r1:= []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"}
+
+	db.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "test@test.com", "testfff", "tester", "", "2", "0", "0"},
+			{"2", "test2@test.com", "test", "tester", "", "2", "1", "0"}},
+	}
+
+	// db.MockRow1 = &gdb.DbRow{
+	// 	Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "0"},
+	// }
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    *[]User
+		wantLen int
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			wantLen: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.GetBannedUserList(); len(*got) != tt.wantLen {
+				t.Errorf("MyBlogDB.GetBannedUserList() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -501,7 +637,7 @@ func TestMyBlogDB_GetUserByID(t *testing.T) {
 		Row: []string{},
 	}
 	db.MockRow1 = &gdb.DbRow{
-		Row: []string{"1", "test@test.com", "testfff", "tester", fileStr, "2", "0"},
+		Row: []string{"1", "test@test.com", "testfff", "tester", fileStr, "2", "0", "0"},
 	}
 
 	var l lg.Logger
@@ -542,6 +678,138 @@ func TestMyBlogDB_GetUserByID(t *testing.T) {
 			d.DB.Connect()
 			if got := d.GetUserByID(tt.args.id); got.Email != "test@test.com" {
 				t.Errorf("MyBlogDB.GetUserByID() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMyBlogDB_DisableUserForCause(t *testing.T) {
+
+	// db := gdb.MyDB{
+	// 	Host:     "localhost:3306",
+	// 	User:     "admin",
+	// 	Password: "admin",
+	// 	Database: "go_micro_blog",
+	// }
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	db.MockUpdateSuccess1 = true
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	type args struct {
+		uid int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			args: args{
+				uid: 20,
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.DisableUserForCause(tt.args.uid); got != tt.want {
+				t.Errorf("MyBlogDB.DisableUserForCause() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMyBlogDB_ReinstateBannedUser(t *testing.T) {
+
+
+	// db := gdb.MyDB{
+	// 	Host:     "localhost:3306",
+	// 	User:     "admin",
+	// 	Password: "admin",
+	// 	Database: "go_micro_blog",
+	// }
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	db.MockUpdateSuccess1 = true
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)  
+
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	type args struct {
+		uid int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			args: args{
+				uid: 20,
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.ReinstateBannedUser(tt.args.uid); got != tt.want {
+				t.Errorf("MyBlogDB.ReinstateBannedUser() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -32,8 +32,12 @@ type Handler interface {
 	UpdateUser(w http.ResponseWriter, r *http.Request)
 	GetUser(w http.ResponseWriter, r *http.Request)
 	GetUserList(w http.ResponseWriter, r *http.Request)
+	GetUnactivatedUserList(w http.ResponseWriter, r *http.Request)
+	GetBannedUserList(w http.ResponseWriter, r *http.Request)
 	EnableUser(w http.ResponseWriter, r *http.Request)
 	DisableUser(w http.ResponseWriter, r *http.Request)
+	DisableUserForCause(w http.ResponseWriter, r *http.Request)
+	ReinstateBannedUser(w http.ResponseWriter, r *http.Request)
 
 	AddRole(w http.ResponseWriter, r *http.Request)
 	GetRole(w http.ResponseWriter, r *http.Request)

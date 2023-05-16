@@ -24,7 +24,7 @@ func TestSysManager_AddUserAuth(t *testing.T) {
 
 	mdb.MockRow1 = &gdb.DbRow{
 		//Row: []string{"0"},
-		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1"},
+		Row: []string{"1", "test@test.com", "testfff", "tester", "", "2", "1", "0"},
 	}
 	mdb.MockInsertID1 = 1
 	mdb.MockInsertSuccess1 = true

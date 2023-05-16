@@ -10,21 +10,40 @@ const (
 		" image = ? " +
 		" where id = ? "
 
-	selectUser = "SELECT id, email, first_name, last_name, image, role_id, active " +
+	selectUser = "SELECT id, email, first_name, last_name, image, role_id, active, " +
+		" disabled_for_cause " +
 		" from  user " +
 		" where email = ? "
 
-	selectUserByID = "SELECT id, email, first_name, last_name, image, role_id, active " +
+	selectUserByID = "SELECT id, email, first_name, last_name, image, role_id, active, " +
+		" disabled_for_cause " +
 		" from  user " +
 		" where id = ? "
 
-	selectUserList = "SELECT id, email, first_name, last_name, image, role_id, active " +
+	selectUserList = "SELECT id, email, first_name, last_name, image, role_id, active, " +
+		" disabled_for_cause " +
 		" from  user "
+
+	selectUnactivatedUserList = "SELECT id, email, first_name, last_name, image, role_id, active, " +
+		" disabled_for_cause " +
+		" from  user " +
+		" where active = false and disabled_for_cause = false "
+
+	selectBannedUserList = "SELECT id, email, first_name, last_name, image, role_id, active, " +
+		" disabled_for_cause " +
+		" from  user " +
+		" where active = false and disabled_for_cause = true "
 
 	enableUser = "UPDATE user SET active = true " +
 		"where id = ?"
 
 	disableUser = "UPDATE user SET active = false " +
+		"where id = ?"
+
+	disableUserForCause = "UPDATE user SET active = false, disabled_for_cause = true " +
+		"where id = ?"
+
+	reinstateBannedUser = "UPDATE user SET active = true, disabled_for_cause = false " +
 		"where id = ?"
 
 	insertRole = "insert into role (name) " +

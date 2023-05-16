@@ -33,8 +33,12 @@ type BlogDB interface {
 	GetUser(email string) *User
 	GetUserByID(id int64) *User
 	GetUserList() *[]User
+	GetUnactivatedUserList() *[]User
+	GetBannedUserList() *[]User
 	EnableUser(uid int64) bool
 	DisableUser(uid int64) bool
+	DisableUserForCause(uid int64) bool
+	ReinstateBannedUser(uid int64) bool
 
 	//Role
 	AddRole(name string) (bool, int64)

@@ -100,6 +100,44 @@ func (d *MyBlogDB) GetUserList() *[]User {
 	return &rtn
 }
 
+// GetUnactivatedUserList GetUnactivatedUserList
+func (d *MyBlogDB) GetUnactivatedUserList() *[]User {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []User{}
+	var a []any
+	rows := d.DB.GetList(selectUnactivatedUserList, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseUserRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
+}
+
+// GetBannedUserList GetBannedUserList
+func (d *MyBlogDB) GetBannedUserList() *[]User {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []User{}
+	var a []any
+	rows := d.DB.GetList(selectBannedUserList, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseUserRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
+}
+
 // EnableUser EnableUser
 func (d *MyBlogDB) EnableUser(uid int64) bool {
 	if !d.testConnection() {
@@ -124,6 +162,30 @@ func (d *MyBlogDB) DisableUser(uid int64) bool {
 	return rtn
 }
 
+// DisableUserForCause DisableUserForCause
+func (d *MyBlogDB) DisableUserForCause(uid int64) bool {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, uid)
+
+	rtn := d.DB.Update(disableUserForCause, a...)
+	return rtn
+}
+
+// ReinstateBannedUser ReinstateBannedUser
+func (d *MyBlogDB) ReinstateBannedUser(uid int64) bool {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, uid)
+
+	rtn := d.DB.Update(reinstateBannedUser, a...)
+	return rtn
+}
+
 func (d *MyBlogDB) parseUserRow(foundRow *[]string) *User {
 	var rtn User
 	d.Log.Debug("foundRow in User", *foundRow)
@@ -135,16 +197,20 @@ func (d *MyBlogDB) parseUserRow(foundRow *[]string) *User {
 			if err == nil {
 				active, err := strconv.ParseBool((*foundRow)[6])
 				if err == nil {
-					img := (*foundRow)[4]
-					if img != "" {
-						rtn.Image = []byte(img)
+					dc, err := strconv.ParseBool((*foundRow)[7])
+					if err == nil {
+						img := (*foundRow)[4]
+						if img != "" {
+							rtn.Image = []byte(img)
+						}
+						rtn.ID = id
+						rtn.RoleID = rid
+						rtn.Active = active
+						rtn.DisabledForCause = dc
+						rtn.Email = (*foundRow)[1]
+						rtn.FirstName = (*foundRow)[2]
+						rtn.LastName = (*foundRow)[3]
 					}
-					rtn.ID = id
-					rtn.RoleID = rid
-					rtn.Active = active
-					rtn.Email = (*foundRow)[1]
-					rtn.FirstName = (*foundRow)[2]
-					rtn.LastName = (*foundRow)[3]
 				}
 			}
 		}
