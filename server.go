@@ -146,6 +146,7 @@ func main() {
 	router.HandleFunc("/rs/user/add", h.AddUser).Methods("POST")
 	router.HandleFunc("/rs/user/update", h.UpdateUser).Methods("PUT")
 	router.HandleFunc("/rs/user/get/{email}", h.GetUser).Methods("GET")
+	router.HandleFunc("/rs/user/get/id/{id}", h.GetUserByID).Methods("GET")
 	router.HandleFunc("/rs/user/list", h.GetUserList).Methods("GET")
 	router.HandleFunc("/rs/user/unactivivated/list", h.GetUnactivatedUserList).Methods("GET")
 	router.HandleFunc("/rs/user/banned/list", h.GetBannedUserList).Methods("GET")

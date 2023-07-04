@@ -426,6 +426,150 @@ func TestMCHandler_GetUser(t *testing.T) {
 	}
 }
 
+func TestMCHandler_GetUserByID(t *testing.T) {
+
+	mdb := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+	mdb.MockRow1 = &gdb.DbRow{
+		Row: []string{"1", "test@test.com", "bob", "hope", "", "4", "true", "false"},
+	}
+
+	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	r.Header.Set("apiKey", "1234")
+	vars := map[string]string{
+		"id": "22",
+	}
+	r = mux.SetURLVars(r, vars)
+	w := httptest.NewRecorder()
+
+	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	r2.Header.Set("apiKey", "12342")
+	vars2 := map[string]string{
+		"id": "22",
+	}
+	r2 = mux.SetURLVars(r2, vars2)
+	w2 := httptest.NewRecorder()
+
+	r3, _ := http.NewRequest("GET", "/ffllist", nil)
+	r3.Header.Set("apiKey", "1234")
+	vars3 := map[string]string{
+		"id": "22f",
+	}
+	r3 = mux.SetURLVars(r3, vars3)
+	w3 := httptest.NewRecorder()
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+	type fields struct {
+		DB          db.BlogDB
+		Log         lg.Log
+		Manager     m.Manager
+		APIKey      string
+		APIAdminKey string
+	}
+	type args struct {
+		w http.ResponseWriter
+		r *http.Request
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		code   int
+		suc    bool
+		len    int
+		ID     int64
+		ww     *httptest.ResponseRecorder
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				APIKey: "1234",
+				Log:    log,
+			},
+			args: args{
+				w: w,
+				r: r,
+			},
+			code: 200,
+			suc:  true,
+			ID:   1,
+			ww:   w,
+		},
+		{
+			name: "test 2",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				APIKey: "1234",
+				Log:    log,
+			},
+			args: args{
+				w: w2,
+				r: r2,
+			},
+			code: 400,
+			suc:  false,
+			ID:   0,
+			ww:   w2,
+		},
+		{
+			name: "test 2",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				APIKey: "1234",
+				Log:    log,
+			},
+			args: args{
+				w: w3,
+				r: r3,
+			},
+			code: 400,
+			suc:  false,
+			ID:   1,
+			ww:   w3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := &MCHandler{
+				DB:          tt.fields.DB,
+				Log:         tt.fields.Log,
+				Manager:     tt.fields.Manager,
+				APIKey:      tt.fields.APIKey,
+				APIAdminKey: tt.fields.APIAdminKey,
+			}
+			h.GetUserByID(tt.args.w, tt.args.r)
+
+			var res db.User
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			json.Unmarshal(body, &res)
+			if tt.ww.Code != tt.code || res.ID != tt.ID {
+				t.Fail()
+			}
+		})
+	}
+}
+
 func TestMCHandler_GetUserList(t *testing.T) {
 
 	mdb := gdb.MyDBMock{

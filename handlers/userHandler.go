@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	mux "github.com/GolangToolKits/grrt"
 	db "github.com/Ulbora/go-micro-blog/db"
@@ -95,6 +96,27 @@ func (h *MCHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		resJSON, _ := json.Marshal(usr)
 		fmt.Fprint(w, string(resJSON))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+// GetUserByID GetUserByID
+func (h *MCHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIKey(r) {
+		var uidStr = vars["id"]
+		uid, uiderr := strconv.ParseInt(uidStr, 10, 64)
+		if uiderr == nil {
+			usr := h.DB.GetUserByID(uid)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(usr)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
