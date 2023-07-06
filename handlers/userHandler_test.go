@@ -530,7 +530,7 @@ func TestMCHandler_GetUserByID(t *testing.T) {
 			ww:   w2,
 		},
 		{
-			name: "test 2",
+			name: "test 3",
 			fields: fields{
 				DB: &db.MyBlogDB{
 					DB:  &mdb,
@@ -545,7 +545,7 @@ func TestMCHandler_GetUserByID(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			ID:   1,
+			ID:   0,
 			ww:   w3,
 		},
 	}

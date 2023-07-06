@@ -76,7 +76,8 @@ const (
 
 	selectBlogList = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
-		" order by name " +
+		// " order by name " +
+		" order by entered desc" +
 		" LIMIT ?, ? "
 
 	activateBlog = "UPDATE blog SET active = true " +
