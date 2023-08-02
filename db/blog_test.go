@@ -363,6 +363,69 @@ func TestMyBlogDB_GetBlogList(t *testing.T) {
 	}
 }
 
+func TestMyBlogDB_GetActiveBlogList(t *testing.T) {
+
+	db := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	db.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+
+	db.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "test blog entry", "some test blog stuff", "4", "true", "2023-03-01 00:01:14", ""},
+			{"2", "test blog entry 333", "some test blog stuff", "4", "true", "2023-03-01 00:01:14", "2023-03-01 00:01:14"}},
+	}
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	type fields struct {
+		DB  gdb.Database
+		Log lg.Log
+	}
+	type args struct {
+		start int64
+		end   int64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *[]Blog
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB:  db.New(),
+				Log: log,
+			},
+			args: args{
+				start: 0,
+				end:   200,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &MyBlogDB{
+				DB:  tt.fields.DB,
+				Log: tt.fields.Log,
+			}
+			d.DB.Connect()
+			if got := d.GetActiveBlogList(tt.args.start, tt.args.end); (*got)[0].Name != "test blog entry" {
+				t.Errorf("MyBlogDB.GetActiveBlogList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestMyBlogDB_ActivateBlog(t *testing.T) {
 
 	// db := gdb.MyDB{

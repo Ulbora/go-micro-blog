@@ -629,11 +629,28 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 	var l lg.Logger
 	log := l.New()
 	log.SetLogLevel(lg.AllLevel)
-	var mg m.MockManager
-	var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
-		{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
+	// var mg m.MockManager
+	// var bl = []db.Blog{{ID: 1, Name: "test blog entry", Content: "some test blog stuff", UserID: 4, Active: true, Entered: time.Now(), Updated: time.Now()},
+	// 	{ID: 2, Name: "test blog entry 333", Content: "some test blog stuff", UserID: 4, Active: false, Entered: time.Now(), Updated: time.Now()}}
 
-	mg.MockBlogList = bl
+	// mg.MockBlogList = bl
+
+	mdb := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+
+	mdb.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "test blog entry", "some test blog stuff", "4", "true", "2023-03-01 00:01:14", ""},
+			{"2", "test blog entry 333", "some test blog stuff", "4", "false", "2023-03-01 00:01:14", "2023-03-01 00:01:14"}},
+	}
+
 
 	// aJSON := ioutil.NopCloser(bytes.NewBufferString(`{"name":"test", "userId": 5}`))
 
@@ -695,11 +712,11 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 			name: "test 1",
 			fields: fields{
 				DB: &db.MyBlogDB{
-					//DB:  &mdb2,
+					DB:  &mdb,
 					Log: log,
 				},
 				Log:     log,
-				Manager: mg.New(),
+				//Manager: mg.New(),
 			},
 			args: args{
 				w: w,
@@ -714,11 +731,11 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 			name: "test 2",
 			fields: fields{
 				DB: &db.MyBlogDB{
-					//DB:  &mdb2,
+					DB:  &mdb,
 					Log: log,
 				},
 				Log:     log,
-				Manager: mg.New(),
+				//Manager: mg.New(),
 			},
 			args: args{
 				w: w2,
@@ -733,11 +750,11 @@ func TestMCHandler_GetBlogList(t *testing.T) {
 			name: "test 3",
 			fields: fields{
 				DB: &db.MyBlogDB{
-					//DB:  &mdb2,
+					DB:  &mdb,
 					Log: log,
 				},
 				Log:     log,
-				Manager: mg.New(),
+				// Manager: mg.New(),
 			},
 			args: args{
 				w: w3,

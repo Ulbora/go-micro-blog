@@ -90,6 +90,26 @@ func (d *MyBlogDB) GetBlogsByName(name string, start int64, end int64) *[]Blog {
 	return &rtn
 }
 
+// GetActiveBlogList GetActiveBlogList
+func (d *MyBlogDB) GetActiveBlogList(start int64, end int64) *[]Blog {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var rtn = []Blog{}
+	var a []any
+	a = append(a, start, end)
+	rows := d.DB.GetList(selectActiveBlogList, a...)
+	if rows != nil && len(rows.Rows) != 0 {
+		foundRows := rows.Rows
+		for r := range foundRows {
+			foundRow := foundRows[r]
+			rowContent := d.parseBlogRow(&foundRow)
+			rtn = append(rtn, *rowContent)
+		}
+	}
+	return &rtn
+}
+
 // GetBlogList GetBlogList
 func (d *MyBlogDB) GetBlogList(start int64, end int64) *[]Blog {
 	if !d.testConnection() {

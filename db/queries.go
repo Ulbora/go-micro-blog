@@ -74,6 +74,14 @@ const (
 		// " order by name " +
 		" where name like ? LIMIT ?, ?  "
 
+	selectActiveBlogList = " SELECT b.id, b.name, b.content, b.user_id, b.active, b.entered, b.updated " +
+		" from  blog b	" +
+		" inner join user u " +
+		" on b.user_id = u.id " +
+		" where u.active and b.active " +
+		" order by b.entered desc " +
+		" LIMIT 0, 100;"
+
 	selectBlogList = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
 		// " order by name " +

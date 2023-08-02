@@ -52,6 +52,7 @@ type BlogDB interface {
 	GetBlog(id int64) *Blog
 	GetBlogsByName(name string, start int64, end int64) *[]Blog
 	GetBlogList(start int64, end int64) *[]Blog
+	GetActiveBlogList(start int64, end int64) *[]Blog
 	ActivateBlog(id int64) bool
 	DeactivateBlog(id int64) bool
 

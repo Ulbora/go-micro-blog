@@ -41,7 +41,7 @@ type Manager interface {
 
 	AddBlog(b *db.Blog) *ResponseID  //logic
 	UpdateBlog(b *db.Blog) *Response //logic
-	GetBlogList(start int64, end int64) *[]db.Blog
+	// GetBlogList(start int64, end int64) *[]db.Blog
 	GetBlogByName(name string, start int64, end int64) *[]db.Blog
 	// //h--GetBlog(id int64) *db.Blog
 	// //h--GetBlogsByName(name string, start int64, end int64) *[]db.Blog

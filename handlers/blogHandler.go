@@ -148,7 +148,7 @@ func (h *MCHandler) GetBlogList(w http.ResponseWriter, r *http.Request) {
 		ed, ederr := strconv.ParseInt(edStr, 10, 64)
 
 		if sterr == nil && ederr == nil {
-			blg := h.Manager.GetBlogList(st, ed)
+			blg := h.DB.GetActiveBlogList(st, ed)
 			w.WriteHeader(http.StatusOK)
 			resJSON, _ := json.Marshal(blg)
 			fmt.Fprint(w, string(resJSON))

@@ -9,11 +9,6 @@ github.com/Ulbora/go-micro-blog/managers/blogManager.go:47.14,49.29 2 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:49.29,51.11 2 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:51.11,53.5 1 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:56.2,56.13 1 1
-github.com/Ulbora/go-micro-blog/managers/blogManager.go:60.69,63.15 3 1
-github.com/Ulbora/go-micro-blog/managers/blogManager.go:63.15,64.22 1 1
-github.com/Ulbora/go-micro-blog/managers/blogManager.go:64.22,65.23 1 1
-github.com/Ulbora/go-micro-blog/managers/blogManager.go:65.23,67.5 1 1
-github.com/Ulbora/go-micro-blog/managers/blogManager.go:70.2,70.13 1 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:74.84,77.15 3 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:77.15,78.22 1 1
 github.com/Ulbora/go-micro-blog/managers/blogManager.go:78.22,79.23 1 1

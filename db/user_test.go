@@ -750,7 +750,6 @@ func TestMyBlogDB_DisableUserForCause(t *testing.T) {
 
 func TestMyBlogDB_ReinstateBannedUser(t *testing.T) {
 
-
 	// db := gdb.MyDB{
 	// 	Host:     "localhost:3306",
 	// 	User:     "admin",
@@ -772,8 +771,7 @@ func TestMyBlogDB_ReinstateBannedUser(t *testing.T) {
 
 	var l lg.Logger
 	log := l.New()
-	log.SetLogLevel(lg.AllLevel)  
-
+	log.SetLogLevel(lg.AllLevel)
 
 	type fields struct {
 		DB  gdb.Database
