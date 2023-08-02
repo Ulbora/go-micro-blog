@@ -80,7 +80,7 @@ const (
 		" on b.user_id = u.id " +
 		" where u.active and b.active " +
 		" order by b.entered desc " +
-		" LIMIT 0, 100;"
+		" LIMIT ?, ? "
 
 	selectBlogList = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
