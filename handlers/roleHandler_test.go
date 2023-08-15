@@ -71,7 +71,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 		args   args
 		code   int
 		suc    bool
-		len int
+		len    int
 		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
@@ -88,7 +88,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			},
 			code: 200,
 			suc:  true,
-			len: 0,
+			len:  0,
 			ww:   w,
 		},
 		{
@@ -104,7 +104,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			},
 			code: 415,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w2,
 		},
 		{
@@ -120,7 +120,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w3,
 		},
 		{
@@ -136,7 +136,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			},
 			code: 500,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w4,
 		},
 	}
@@ -154,7 +154,7 @@ func TestMCHandler_AddRole(t *testing.T) {
 			var res m.ResponseID
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if  (tt.ww.Code != tt.code || res.Success != tt.suc) {
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})
@@ -214,7 +214,7 @@ func TestMCHandler_GetRole(t *testing.T) {
 		args   args
 		code   int
 		suc    bool
-		id int64
+		id     int64
 		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
@@ -234,7 +234,7 @@ func TestMCHandler_GetRole(t *testing.T) {
 			},
 			code: 200,
 			suc:  true,
-			id: 1,
+			id:   1,
 			ww:   w,
 		},
 		{
@@ -252,7 +252,7 @@ func TestMCHandler_GetRole(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			id: 0,
+			id:   0,
 			ww:   w2,
 		},
 	}
@@ -270,7 +270,7 @@ func TestMCHandler_GetRole(t *testing.T) {
 			var res db.Role
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if  (tt.ww.Code != tt.code || res.ID != tt.id) {
+			if tt.ww.Code != tt.code || res.ID != tt.id {
 				t.Fail()
 			}
 		})
@@ -331,7 +331,7 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 		args   args
 		code   int
 		suc    bool
-		len int
+		len    int
 		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
@@ -351,7 +351,7 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 			},
 			code: 200,
 			suc:  true,
-			len: 2,
+			len:  2,
 			ww:   w,
 		},
 		{
@@ -370,7 +370,7 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w2,
 		},
 	}
@@ -388,7 +388,7 @@ func TestMCHandler_GetRoleList(t *testing.T) {
 			var res []db.Role
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if  (tt.ww.Code != tt.code || len(res) != tt.len) {
+			if tt.ww.Code != tt.code || len(res) != tt.len {
 				t.Fail()
 			}
 		})
@@ -428,10 +428,6 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-
-
-
-
 	r2, _ := http.NewRequest("GET", "/ffllist", nil)
 	r2.Header.Set("apiAdminKey", "12343")
 	vars2 := map[string]string{
@@ -441,9 +437,6 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 
 	w2 := httptest.NewRecorder()
 
-
-
-
 	r3, _ := http.NewRequest("GET", "/ffllist", nil)
 	r3.Header.Set("apiAdminKey", "1234")
 	vars3 := map[string]string{
@@ -452,8 +445,6 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 	r3 = mux.SetURLVars(r3, vars3)
 
 	w3 := httptest.NewRecorder()
-
-
 
 	type fields struct {
 		DB          db.BlogDB
@@ -472,7 +463,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 		args   args
 		code   int
 		suc    bool
-		len int
+		len    int
 		ww     *httptest.ResponseRecorder
 	}{
 		// TODO: Add test cases.
@@ -483,7 +474,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:    log,
+				Log:         log,
 				APIAdminKey: "1234",
 			},
 			args: args{
@@ -492,7 +483,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 			},
 			code: 200,
 			suc:  true,
-			len: 0,
+			len:  0,
 			ww:   w,
 		},
 		{
@@ -502,7 +493,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:    log,
+				Log:         log,
 				APIAdminKey: "1234",
 			},
 			args: args{
@@ -511,7 +502,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w2,
 		},
 		{
@@ -521,7 +512,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:    log,
+				Log:         log,
 				APIAdminKey: "1234",
 			},
 			args: args{
@@ -530,7 +521,7 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 			},
 			code: 400,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w3,
 		},
 	}
@@ -545,12 +536,10 @@ func TestMCHandler_DeleteRole(t *testing.T) {
 			}
 			h.DeleteRole(tt.args.w, tt.args.r)
 
-
-
 			var res m.Response
 			body, _ := ioutil.ReadAll(w.Result().Body)
 			json.Unmarshal(body, &res)
-			if (tt.ww.Code != tt.code || res.Success != tt.suc) {
+			if tt.ww.Code != tt.code || res.Success != tt.suc {
 				t.Fail()
 			}
 		})

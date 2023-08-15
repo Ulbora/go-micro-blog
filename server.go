@@ -135,6 +135,7 @@ func main() {
 	router.HandleFunc("/rs/blog/admin/list/{start}/{end}", h.GetAdminBlogList).Methods("GET")
 	router.HandleFunc("/rs/blog/activate", h.ActivateBlog).Methods("PUT")
 	router.HandleFunc("/rs/blog/deactivate", h.DectivateBlog).Methods("PUT")
+	router.HandleFunc("/rs/blog/delete/{id}", h.DeleteBlog).Methods("DELETE")
 
 	router.HandleFunc("/rs/comment/add", h.AddComment).Methods("POST")
 	router.HandleFunc("/rs/comment/update", h.UpdateComment).Methods("PUT")

@@ -154,6 +154,17 @@ func (d *MyBlogDB) DeactivateBlog(id int64) bool {
 	return rtn
 }
 
+// DeleteBlog DeleteBlog
+func (d *MyBlogDB) DeleteBlog(id int64) bool {
+	if !d.testConnection() {
+		d.DB.Connect()
+	}
+	var a []interface{}
+	a = append(a, id)
+	rtn := d.DB.Delete(deleteBlog, a...)
+	return rtn
+}
+
 func (d *MyBlogDB) parseBlogRow(foundRow *[]string) *Blog {
 	var rtn Blog
 	d.Log.Debug("foundRow in blog", *foundRow)

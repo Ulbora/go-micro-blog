@@ -53,6 +53,7 @@ type Handler interface {
 	GetAdminBlogList(w http.ResponseWriter, r *http.Request)
 	ActivateBlog(w http.ResponseWriter, r *http.Request)
 	DectivateBlog(w http.ResponseWriter, r *http.Request)
+	DeleteBlog(w http.ResponseWriter, r *http.Request)
 
 	AddLike(w http.ResponseWriter, r *http.Request)
 	RemoveLike(w http.ResponseWriter, r *http.Request)

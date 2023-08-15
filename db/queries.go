@@ -94,6 +94,9 @@ const (
 	deactivateBlog = "UPDATE blog SET active = false " +
 		"where id = ?"
 
+	deleteBlog = "DELETE from blog " +
+		" where id = ? "
+
 	insertLike = "insert into likes (user_id, blog_id) " +
 		" values (?, ?) "
 

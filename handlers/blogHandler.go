@@ -241,3 +241,32 @@ func (h *MCHandler) DectivateBlog(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// DeleteBlog DeleteBlog
+func (h *MCHandler) DeleteBlog(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	vars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(vars))
+	if vars != nil && len(vars) == 1 && h.processAPIAdminKey(r) {
+		var idStr = vars["id"]
+		h.Log.Debug("id: ", idStr)
+		id, iderr := strconv.ParseInt(idStr, 10, 64)
+		if iderr == nil {
+			dblg := h.DB.DeleteBlog(id)
+			var res m.Response
+			res.Success = dblg
+			h.Log.Debug("dblg: ", dblg)
+			if res.Success {
+				w.WriteHeader(http.StatusOK)
+				resJSON, _ := json.Marshal(res)
+				fmt.Fprint(w, string(resJSON))
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}

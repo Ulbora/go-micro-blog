@@ -49,6 +49,13 @@ github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:227.53,229.4 1 1
 github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:229.9,234.19 5 1
 github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:234.19,238.5 3 1
 github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:238.10,240.5 1 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:246.72,250.62 4 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:250.62,254.19 4 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:254.19,259.19 5 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:259.19,263.5 3 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:263.10,265.5 1 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:266.9,268.4 1 1
+github.com/Ulbora/go-micro-blog/handlers/blogHandler.go:269.8,271.3 1 1
 github.com/Ulbora/go-micro-blog/handlers/commentHandler.go:35.72,38.11 3 1
 github.com/Ulbora/go-micro-blog/handlers/commentHandler.go:38.11,40.3 1 1
 github.com/Ulbora/go-micro-blog/handlers/commentHandler.go:40.8,45.47 5 1
