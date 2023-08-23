@@ -171,11 +171,14 @@ func main() {
 	router.HandleFunc("/rs/config/update", h.UpdateConfig).Methods("PUT")
 	router.HandleFunc("/rs/config/get", h.GetConfig).Methods("GET")
 
+	//logger
+	router.HandleFunc("/rs/loglevel", h.SetLogLevel).Methods("POST")
+
 	//router.HandleFunc("/rs/loglevel", h.SetLogLevel).Methods("POST")
 
 	fmt.Println("Micor-Blog server is running on port " + port + "!")
 
-	// log.SetLogLevel(lg.OffLevel)
+	log.SetLogLevel(lg.OffLevel)
 
 	http.ListenAndServe(":"+port, router)
 }
