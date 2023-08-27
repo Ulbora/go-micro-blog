@@ -71,5 +71,15 @@ type Handler interface {
 
 	UpdateConfig(w http.ResponseWriter, r *http.Request)
 	GetConfig(w http.ResponseWriter, r *http.Request)
+
+	//GetRules(w http.ResponseWriter, r *http.Request)
+	//SetRules(w http.ResponseWriter, r *http.Request)
+
+	//GetTerms(w http.ResponseWriter, r *http.Request)
+	//SetTerms(w http.ResponseWriter, r *http.Request)
+
+	//GetAbout(w http.ResponseWriter, r *http.Request)
+	//SetAbout((w http.ResponseWriter, r *http.Request))
+
 	SetLogLevel(w http.ResponseWriter, r *http.Request)
 }

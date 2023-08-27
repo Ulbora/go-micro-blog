@@ -77,4 +77,19 @@ type BlogDB interface {
 	AddConfig(b *Config) (bool, int64)
 	UpdateConfig(u *Config) bool
 	GetConfig() *[]Config
+
+	//rules
+	AddRule(r *Rule) (bool, int64)
+	UpdateRule(r *Rule) bool
+	GetRule() *[]Rule
+
+	//Tos
+	AddTos(t *Tos) (bool, int64)
+	UpdateTos(t *Tos) bool
+	GetTos() *[]Tos
+
+	//About
+	AddAbout(ab *About) (bool, int64)
+	UpdateAbout(ab *About) bool
+	GetAbout() *[]About
 }

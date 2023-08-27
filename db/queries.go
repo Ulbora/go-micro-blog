@@ -72,7 +72,9 @@ const (
 	selectBlogByName = " SELECT id, name, content, user_id, active, entered, updated " +
 		" from  blog " +
 		// " order by name " +
-		" where name like ? LIMIT ?, ?  "
+		" where name like ? " +
+		" order by entered desc " +
+		" LIMIT ?, ?  "
 
 	selectActiveBlogList = " SELECT b.id, b.name, b.content, b.user_id, b.active, b.entered, b.updated " +
 		" from  blog b	" +
@@ -138,4 +140,31 @@ const (
 
 	selectConfigList = " SELECT id, allow_auto_post, allow_auto_comment " +
 		" from  config "
+
+	insertRule = "insert into rules (content) " +
+		" values (?) "
+
+	updateRule = " UPDATE rules SET content = ? " +
+		" where id = ? "
+
+	selectRules = " SELECT id, content " +
+		" from  rules "
+
+	insertTos = "insert into tos (content) " +
+		" values (?) "
+
+	updateTos = " UPDATE tos SET content = ? " +
+		" where id = ? "
+
+	selectTos = " SELECT id, content " +
+		" from  tos "
+
+	insertAbout = "insert into about (content) " +
+		" values (?) "
+
+	updateAbout = " UPDATE about SET content = ? " +
+		" where id = ? "
+
+	selectAbout = " SELECT id, content " +
+		" from  about "
 )
