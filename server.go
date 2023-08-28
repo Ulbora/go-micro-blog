@@ -171,6 +171,18 @@ func main() {
 	router.HandleFunc("/rs/config/update", h.UpdateConfig).Methods("PUT")
 	router.HandleFunc("/rs/config/get", h.GetConfig).Methods("GET")
 
+	router.HandleFunc("/rs/rule/add", h.AddRule).Methods("POST")
+	router.HandleFunc("/rs/rule/update", h.UpdateRule).Methods("PUT")
+	router.HandleFunc("/rs/rule/get", h.GetRules).Methods("GET")
+
+	router.HandleFunc("/rs/tos/add", h.AddTerms).Methods("POST")
+	router.HandleFunc("/rs/tos/update", h.UpdateTerms).Methods("PUT")
+	router.HandleFunc("/rs/tos/get", h.GetTerms).Methods("GET")
+
+	router.HandleFunc("/rs/about/add", h.AddAbout).Methods("POST")
+	router.HandleFunc("/rs/about/update", h.UpdateAbout).Methods("PUT")
+	router.HandleFunc("/rs/about/get", h.GetAbout).Methods("GET")
+
 	//logger
 	router.HandleFunc("/rs/loglevel", h.SetLogLevel).Methods("POST")
 
