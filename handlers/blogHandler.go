@@ -136,6 +136,33 @@ func (h *MCHandler) GetBlogByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetAdminBlogByName GetAdminBlogByName
+func (h *MCHandler) GetAdminBlogByName(w http.ResponseWriter, r *http.Request) {
+	h.setContentType(w)
+	avars := mux.Vars(r)
+	h.Log.Debug("vars: ", len(avars))
+	if avars != nil && len(avars) == 3 && h.processAPIAdminKey(r) {
+		var name = avars["name"]
+		h.Log.Debug("name: ", name)
+		var astStr = avars["start"]
+		var aedStr = avars["end"]
+		st, sterr := strconv.ParseInt(astStr, 10, 64)
+		ed, ederr := strconv.ParseInt(aedStr, 10, 64)
+
+		if sterr == nil && ederr == nil {
+			//blg := h.Manager.GetBlogByName(name, st, ed)
+			blg := h.DB.GetBlogsByName(name, st, ed)
+			w.WriteHeader(http.StatusOK)
+			resJSON, _ := json.Marshal(blg)
+			fmt.Fprint(w, string(resJSON))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 // GetBlogList GetBlogList
 func (h *MCHandler) GetBlogList(w http.ResponseWriter, r *http.Request) {
 	h.setContentType(w)

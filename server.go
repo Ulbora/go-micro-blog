@@ -131,6 +131,7 @@ func main() {
 	router.HandleFunc("/rs/blog/update", h.UpdateBlog).Methods("PUT")
 	router.HandleFunc("/rs/blog/get/id/{id}", h.GetBlog).Methods("GET")
 	router.HandleFunc("/rs/blog/get/name/{name}/{start}/{end}", h.GetBlogByName).Methods("GET")
+	router.HandleFunc("/rs/blog/admin/get/name/{name}/{start}/{end}", h.GetAdminBlogByName).Methods("GET")
 	router.HandleFunc("/rs/blog/list/{start}/{end}", h.GetBlogList).Methods("GET")
 	router.HandleFunc("/rs/blog/admin/list/{start}/{end}", h.GetAdminBlogList).Methods("GET")
 	router.HandleFunc("/rs/blog/activate", h.ActivateBlog).Methods("PUT")

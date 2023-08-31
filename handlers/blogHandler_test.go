@@ -624,6 +624,177 @@ func TestMCHandler_GetBlogByName(t *testing.T) {
 	}
 }
 
+func TestMCHandler_GetAdminBlogByName(t *testing.T) {
+
+	mdb := gdb.MyDBMock{
+		Host:     "localhost:3306",
+		User:     "admin",
+		Password: "admin",
+		Database: "go_micro_blog",
+	}
+	mdb.MockTestRow = &gdb.DbRow{
+		//Row: []string{"0"},
+		Row: []string{},
+	}
+
+	mdb.MockRows1 = &gdb.DbRows{
+		Rows: [][]string{{"1", "test blog entry", "some test blog stuff", "4", "true", "2023-03-01 00:01:14", ""},
+			{"2", "test blog entry 333", "some test blog stuff", "4", "false", "2023-03-01 00:01:14", "2023-03-01 00:01:14"}},
+	}
+
+	var l lg.Logger
+	log := l.New()
+	log.SetLogLevel(lg.AllLevel)
+
+	r, _ := http.NewRequest("GET", "/ffllist", nil)
+	
+	vars := map[string]string{
+		"name":  "test",
+		"start": "1",
+		"end":   "5",
+	}
+	r = mux.SetURLVars(r, vars)
+	r.Header.Set("apiAdminKey", "1234")
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+
+
+
+
+	r2, _ := http.NewRequest("GET", "/ffllist", nil)
+	
+	vars2 := map[string]string{
+		"name":  "test",
+		"start": "1",
+		"end":   "5",
+	}
+	r2 = mux.SetURLVars(r2, vars2)
+	r2.Header.Set("apiAdminKey", "12346")
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w2 := httptest.NewRecorder()
+
+
+
+	r3, _ := http.NewRequest("GET", "/ffllist", nil)
+	
+	vars3 := map[string]string{
+		"name":  "test",
+		"start": "1u",
+		"end":   "5",
+	}
+	r3 = mux.SetURLVars(r3, vars3)
+	r3.Header.Set("apiAdminKey", "1234")
+	//r.Header.Set("apiKey", "1234")
+	//r.Header.Set("Content-Type", "application/json")
+
+	w3 := httptest.NewRecorder()
+
+	type fields struct {
+		DB          db.BlogDB
+		Log         lg.Log
+		Manager     m.Manager
+		APIKey      string
+		APIAdminKey string
+	}
+	type args struct {
+		w http.ResponseWriter
+		r *http.Request
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		code   int
+		suc    bool
+		len    int
+		ww     *httptest.ResponseRecorder
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				Log:     log,
+				// Manager: mg.New(),
+				APIAdminKey: "1234",
+			},
+			args: args{
+				w: w,
+				r: r,
+			},
+			code: 200,
+			suc:  true,
+			len:  2,
+			ww:   w,
+		},
+		{
+			name: "test 2",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				Log:     log,
+				// Manager: mg.New(),
+				APIAdminKey: "1234",
+			},
+			args: args{
+				w: w2,
+				r: r2,
+			},
+			code: 400,
+			suc:  false,
+			len:  0,
+			ww:   w2,
+		},
+		{
+			name: "test 3",
+			fields: fields{
+				DB: &db.MyBlogDB{
+					DB:  &mdb,
+					Log: log,
+				},
+				Log:     log,
+				// Manager: mg.New(),
+				APIAdminKey: "1234",
+			},
+			args: args{
+				w: w3,
+				r: r3,
+			},
+			code: 400,
+			suc:  true,
+			len:  0,
+			ww:   w3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := &MCHandler{
+				DB:          tt.fields.DB,
+				Log:         tt.fields.Log,
+				Manager:     tt.fields.Manager,
+				APIKey:      tt.fields.APIKey,
+				APIAdminKey: tt.fields.APIAdminKey,
+			}
+			h.GetAdminBlogByName(tt.args.w, tt.args.r)
+			var res []db.Blog
+			body, _ := ioutil.ReadAll(w.Result().Body)
+			json.Unmarshal(body, &res)
+			if tt.ww.Code != tt.code || len(res) != tt.len {
+				t.Fail()
+			}
+		})
+	}
+}
+
 func TestMCHandler_GetBlogList(t *testing.T) {
 
 	var l lg.Logger
@@ -1395,7 +1566,6 @@ func TestMCHandler_DeleteBlog(t *testing.T) {
 
 	w3 := httptest.NewRecorder()
 
-
 	r4, _ := http.NewRequest("GET", "/ffllist", nil)
 	r4.Header.Set("apiAdminKey", "1234")
 	vars4 := map[string]string{
@@ -1406,7 +1576,6 @@ func TestMCHandler_DeleteBlog(t *testing.T) {
 	w4 := httptest.NewRecorder()
 
 	mdb.MockDeleteSuccess2 = false
-
 
 	//mdb.MockDeleteSuccess1 = false
 
@@ -1495,7 +1664,7 @@ func TestMCHandler_DeleteBlog(t *testing.T) {
 					DB:  &mdb,
 					Log: log,
 				},
-				Log:    log,
+				Log:         log,
 				APIAdminKey: "1234",
 			},
 			args: args{
@@ -1504,7 +1673,7 @@ func TestMCHandler_DeleteBlog(t *testing.T) {
 			},
 			code: 500,
 			suc:  false,
-			len: 0,
+			len:  0,
 			ww:   w4,
 		},
 	}
