@@ -99,3 +99,15 @@ type About struct {
 	ID      int64  `json:"id"`
 	Content string `json:"content"`
 }
+
+// Home Home
+type Home struct {
+	ID      int64  `json:"id"`
+	Content string `json:"content"`
+}
+
+// PrivacyPolicy Privacy
+type PrivacyPolicy struct {
+	ID      int64  `json:"id"`
+	Content string `json:"content"`
+}

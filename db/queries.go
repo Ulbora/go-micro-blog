@@ -167,4 +167,22 @@ const (
 
 	selectAbout = " SELECT id, content " +
 		" from  about "
+
+	insertHome = "insert into home (content) " +
+		" values (?) "
+
+	updateHome = " UPDATE home SET content = ? " +
+		" where id = ? "
+
+	selectHome = " SELECT id, content " +
+		" from  home "
+
+	insertPrivacyPolicy = "insert into privacy_policy (content) " +
+		" values (?) "
+
+	updatePrivacyPolicy = " UPDATE privacy_policy SET content = ? " +
+		" where id = ? "
+
+	selectPrivacyPolicy = " SELECT id, content " +
+		" from  privacy_policy "
 )

@@ -92,4 +92,14 @@ type BlogDB interface {
 	AddAbout(ab *About) (bool, int64)
 	UpdateAbout(ab *About) bool
 	GetAbout() *[]About
+
+	//Home
+	AddHome(ab *Home) (bool, int64)
+	UpdateHome(ab *Home) bool
+	GetHome() *[]Home
+
+	//PrivacyPolicy
+	AddPrivacyPolicy(ab *PrivacyPolicy) (bool, int64)
+	UpdatePrivacyPolicy(ab *PrivacyPolicy) bool
+	GetPrivacyPolicy() *[]PrivacyPolicy
 }

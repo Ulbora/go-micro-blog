@@ -86,6 +86,15 @@ type Handler interface {
 	AddAbout(w http.ResponseWriter, r *http.Request)
 	UpdateAbout(w http.ResponseWriter, r *http.Request)
 	GetAbout(w http.ResponseWriter, r *http.Request)
+
+	AddHome(w http.ResponseWriter, r *http.Request)
+	UpdateHome(w http.ResponseWriter, r *http.Request)
+	GetHome(w http.ResponseWriter, r *http.Request)
+
+	AddPrivacyPolicy(w http.ResponseWriter, r *http.Request)
+	UpdatePrivacyPolicy(w http.ResponseWriter, r *http.Request)
+	GetPrivacyPolicy(w http.ResponseWriter, r *http.Request)
+
 	//====SetAbout((w http.ResponseWriter, r *http.Request))
 
 	SetLogLevel(w http.ResponseWriter, r *http.Request)
