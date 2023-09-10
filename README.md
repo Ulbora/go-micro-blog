@@ -9,4 +9,4 @@ Built with GolangToolKits/grrt, a drop-in replacement for gorilla/mux which is n
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ulbora/go-micro-blog)](https://goreportcard.com/report/github.com/Ulbora/go-micro-blog)
 
 ## Docker
-https://hub.docker.com/r/ulboralabs/go-micro-blog:latest
+https://hub.docker.com/r/ulboralabs/go-micro-blog
